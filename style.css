@@ -88,10 +88,13 @@ body { background-color: var(--bg-body); color: var(--text-main); line-height: 1
 /* Radio Buttons Custom (Gagné/Perdu) */
 .radio-group { display: flex; gap: 10px; }
 .radio-group input[type="radio"] { display: none; }
-.radio-btn { flex: 1; text-align: center; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; cursor: pointer; font-weight: bold; background: var(--bg-body); transition: 0.2s; }
-#status-won:checked + .won-btn { background: #c6f6d5; border-color: var(--success-color); color: var(--success-color); }
-#status-lost:checked + .lost-btn { background: #fed7d7; border-color: var(--danger-color); color: var(--danger-color); }
+.radio-btn { flex: 1; text-align: center; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; cursor: pointer; font-weight: bold; background: var(--bg-body); transition: 0.2s; color: var(--text-muted); }
 
+/* État quand "Gagné" est sélectionné */
+#status-won:checked + .won-btn { background: #c6f6d5; border-color: var(--success-color); color: var(--success-color); }
+
+/* État quand "Perdu" est sélectionné - Version Rouge Harmonieuse */
+#status-lost:checked + .lost-btn { background: #fed7d7; border-color: var(--danger-color); color: var(--danger-color); }
 /* Boutons */
 button.btn-primary { background: var(--primary-color); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; }
 button.btn-primary:hover { background: var(--primary-hover); }

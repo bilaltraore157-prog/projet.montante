@@ -67,7 +67,7 @@ body { background-color: var(--bg-body); color: var(--text-main); line-height: 1
 /* KPIs */
 .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
 .kpi-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; display: flex; align-items: center; gap: 15px; border-left: 4px solid var(--primary-color); }
-.kpi-icon { font-size: 2rem; color: var(--text-muted); background: var(--bg-body); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+.kpi-icon { font-size: 1.5rem; color: var(--text-muted); background: var(--bg-body); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
 .kpi-data { display: flex; flex-direction: column; }
 .kpi-title { font-size: 0.75rem; font-weight: bold; color: var(--text-muted); text-transform: uppercase; }
 .kpi-data strong { font-size: 1.3rem; }

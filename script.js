@@ -138,7 +138,7 @@ function setupEventListeners() {
         document.querySelector('#theme-toggle i').className = nextTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
     });
 
-    // 1. Accordéon pour l'Historique
+    // Accordéon pour l'Historique
     document.getElementById('toggle-history-btn').addEventListener('click', () => {
         const content = document.getElementById('history-collapsible-content');
         const icon = document.getElementById('toggle-history-icon');
@@ -146,7 +146,7 @@ function setupEventListeners() {
         icon.classList.toggle('rotated');
     });
 
-    // 2. Accordéon pour la Matrice Temporelle (Ton idée image_0bfc96.png)
+    // Accordéon pour la Matrice Temporelle
     document.getElementById('toggle-grid-btn').addEventListener('click', () => {
         const content = document.getElementById('grid-collapsible-content');
         const icon = document.getElementById('toggle-grid-icon');
@@ -202,7 +202,12 @@ function calculateMetricsAndRenderKPIs() {
     const totalCoupons = coupons.length;
     const profitTotal = currentCapital - config.initialCapital;
     const winRate = totalCoupons > 0 ? (countWon / totalCoupons) * 100 : 0;
+    
+    // VRAI ROI basé sur l'argent misé (Excellent choix des pros)
     const roi = totalStaked > 0 ? (profitTotal / totalStaked) * 100 : 0;
+    
+    // Progression réelle par rapport au capital global initial
+    const capitalProgress = config.initialCapital > 0 ? (profitTotal / config.initialCapital) * 100 : 0;
     const uniqueDates = [...new Set(coupons.map(c => c.date))].sort();
     const currentDayProgress = Math.min(uniqueDates.length || 1, config.challengeDays);
 
@@ -212,7 +217,10 @@ function calculateMetricsAndRenderKPIs() {
     dom.totalProfit.className = profitTotal >= 0 ? 'text-success' : 'text-danger';
     dom.roi.textContent = `ROI: ${roi.toFixed(1)}%`;
     dom.targetObjective.textContent = `${config.targetObjective.toFixed(2)} F CFA`;
-    dom.progressPercent.textContent = `Objectif: ${Math.min((currentCapital / config.targetObjective) * 100, 100).toFixed(0)}%`;
+    
+    // Met à jour la progression du capital global sous l'objectif final
+    dom.progressPercent.textContent = `Progression: ${capitalProgress >= 0 ? '+' : ''}${capitalProgress.toFixed(1)}%`;
+    
     dom.winRate.textContent = `${winRate.toFixed(1)}%`;
     dom.ratio.textContent = `${countWon} V / ${countLost} D (Total: ${totalCoupons})`;
     dom.challengeDayLabel.textContent = `Jour ${currentDayProgress} sur ${config.challengeDays}`;

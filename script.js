@@ -3,7 +3,7 @@
  */
 
 let config = {
-    initialCapital: 50000,
+    initialCapital: 30000,
     targetObjective: 150000,
     challengeDays: 30
 };
@@ -138,6 +138,22 @@ function setupEventListeners() {
         document.querySelector('#theme-toggle i').className = nextTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
     });
 
+    // Accordéon pour le Formulaire d'Ajout de Coupon
+    document.getElementById('toggle-form-btn').addEventListener('click', () => {
+        const content = document.getElementById('form-collapsible-content');
+        const icon = document.getElementById('toggle-form-icon');
+        content.classList.toggle('collapsed');
+        icon.classList.toggle('rotated');
+    });
+
+    // Accordéon pour les Paramètres
+    document.getElementById('toggle-settings-btn').addEventListener('click', () => {
+        const content = document.getElementById('settings-collapsible-content');
+        const icon = document.getElementById('toggle-settings-icon');
+        content.classList.toggle('collapsed');
+        icon.classList.toggle('rotated');
+    });
+
     // Accordéon pour l'Historique
     document.getElementById('toggle-history-btn').addEventListener('click', () => {
         const content = document.getElementById('history-collapsible-content');
@@ -203,7 +219,7 @@ function calculateMetricsAndRenderKPIs() {
     const profitTotal = currentCapital - config.initialCapital;
     const winRate = totalCoupons > 0 ? (countWon / totalCoupons) * 100 : 0;
     
-    // VRAI ROI basé sur l'argent misé (Excellent choix des pros)
+    // VRAI ROI basé sur l'argent misé
     const roi = totalStaked > 0 ? (profitTotal / totalStaked) * 100 : 0;
     
     // Progression réelle par rapport au capital global initial
@@ -218,7 +234,6 @@ function calculateMetricsAndRenderKPIs() {
     dom.roi.textContent = `ROI: ${roi.toFixed(1)}%`;
     dom.targetObjective.textContent = `${config.targetObjective.toFixed(2)} F CFA`;
     
-    // Met à jour la progression du capital global sous l'objectif final
     dom.progressPercent.textContent = `Progression: ${capitalProgress >= 0 ? '+' : ''}${capitalProgress.toFixed(1)}%`;
     
     dom.winRate.textContent = `${winRate.toFixed(1)}%`;
@@ -390,15 +405,24 @@ window.triggerEditCoupon = function(id) {
     document.getElementById('coupon-odds').value = c.odds;
     document.getElementById('coupon-stake').value = c.stake;
     document.querySelector(`input[name="coupon-status"][value="${c.status}"]`).checked = true;
-    document.getElementById('form-title').textContent = "Modifier le Coupon";
+    document.getElementById('form-title').innerHTML = "<i class='fa-solid fa-pen-to-square'></i> Modifier le Coupon";
     document.getElementById('cancel-edit').classList.remove('hidden');
+    
+    // Ouvre automatiquement le formulaire s'il était fermé
+    const content = document.getElementById('form-collapsible-content');
+    const icon = document.getElementById('toggle-form-icon');
+    if (content.classList.contains('collapsed')) {
+        content.classList.remove('collapsed');
+        icon.classList.remove('rotated');
+    }
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
 function resetFormState() {
     document.getElementById('edit-id').value = ''; dom.couponForm.reset();
     document.getElementById('coupon-date').value = new Date().toISOString().split('T')[0];
-    document.getElementById('form-title').textContent = "Ajouter un Coupon";
+    document.getElementById('form-title').innerHTML = "<i class='fa-solid fa-circle-plus'></i> Ajouter un Coupon";
     document.getElementById('cancel-edit').classList.add('hidden');
 }
 

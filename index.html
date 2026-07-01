@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BetTracker Pro - Challenge 30 Jours</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Système de Notifications Toast -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- En-tête Principale -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo-area">
+                <i class="fa-solid fa-chart-line-up logo-icon"></i>
+                <div>
+                    <h1>BetTracker <span class="accent-text">Pro</span></h1>
+                    <p class="subtitle">Suivi de Challenge Paris Sportifs</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="theme-toggle" class="btn btn-secondary" title="Changer de mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button id="reset-challenge" class="btn btn-danger">
+                    <i class="fa-solid fa-trash-can"></i> Réinitialiser
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <!-- SECTION 1 : TABLEAU DE BORD (KPIs) -->
+        <section class="dashboard-grid">
+            <div class="kpi-card highlight">
+                <div class="kpi-icon"><i class="fa-solid fa-wallet"></i></div>
+                <div class="kpi-data">
+                    <span class="kpi-label">Capital Actuel</span>
+                    <h3 id="kpi-current-capital">0.00 F CFA</h3>
+                    <span class="kpi-sub" id="kpi-initial-capital">Départ: 0.00 F CFA</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon text-success"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+                <div class="kpi-data">
+                    <span class="kpi-label">Profit Total</span>
+                    <h3 id="kpi-total-profit" class="text-success">0.00 F CFA</h3>
+                    <span class="kpi-sub" id="kpi-roi">ROI: 0.0%</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon text-info"><i class="fa-solid fa-bullseye"></i></div>
+                <div class="kpi-data">
+                    <span class="kpi-label">Objectif Final</span>
+                    <h3 id="kpi-target-objective">0.00 F CFA</h3>
+                    <span class="kpi-sub" id="kpi-progress-percent">Progression: 0%</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="fa-solid fa-percentage"></i></div>
+                <div class="kpi-data">
+                    <span class="kpi-label">Taux de Réussite</span>
+                    <h3 id="kpi-win-rate">0.0%</h3>
+                    <span class="kpi-sub" id="kpi-ratio">0/0 Coupons</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- BARRE DE PROGRESSION GLOBALE -->
+        <div class="progress-section card">
+            <div class="progress-labels">
+                <span id="challenge-day-label">Jour 1 sur 30</span>
+                <span id="challenge-progress-text">0% du temps écoulé</span>
+            </div>
+            <div class="progress-bar-container">
+                <div id="challenge-progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- ZONE DEUX COLONNES : FORMULAIRE & GRAPH / GRILLE -->
+        <div class="layout-grid">
+            
+            <!-- Colonne Gauche -->
+            <div class="sidebar-column">
+                
+                <!-- Formulaire d'Ajout -->
+                <div class="card" id="form-section">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-plus-circle"></i> <span id="form-title">Ajouter un Coupon</span></h2>
+                        <button id="cancel-edit" class="btn btn-sm btn-secondary hidden">Annuler</button>
+                    </div>
+                    <form id="coupon-form" class="modern-form">
+                        <input type="hidden" id="edit-id">
+                        <div class="form-group">
+                            <label for="coupon-date">Date du pari</label>
+                            <input type="date" id="coupon-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="coupon-type">Type de Gestion</label>
+                            <select id="coupon-type" required>
+                                <option value="SAFE">SAFE (Pari sécurisé)</option>
+                                <option value="FUN">FUN (Pari risqué)</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="coupon-odds">Cote</label>
+                                <input type="number" id="coupon-odds" step="0.01" min="1.01" placeholder="1.50" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="coupon-stake">Mise (F CFA)</label>
+                                <input type="number" id="coupon-stake" step="1" min="1" placeholder="5000" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Résultat</label>
+                            <div class="radio-group">
+                                <label class="radio-label status-won">
+                                    <input type="radio" name="coupon-status" value="WON" checked>
+                                    <span>✅ Gagné</span>
+                                </label>
+                                <label class="radio-label status-lost">
+                                    <input type="radio" name="coupon-status" value="LOST">
+                                    <span>❌ Perdu</span>
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" id="submit-btn" class="btn btn-primary btn-block">
+                            <i class="fa-solid fa-floppy-disk"></i> Enregistrer le coupon
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Paramètres -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-gear"></i> Paramètres</h2>
+                    </div>
+                    <form id="settings-form" class="modern-form">
+                        <div class="form-group">
+                            <label for="set-initial">Capital Initial (F CFA)</label>
+                            <input type="number" id="set-initial" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="set-target">Objectif Target (F CFA)</label>
+                            <input type="number" id="set-target" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="set-days">Durée du Challenge (Jours)</label>
+                            <input type="number" id="set-days" min="1" max="100" required>
+                        </div>
+                        <button type="submit" class="btn btn-secondary btn-block">
+                            <i class="fa-solid fa-rotate"></i> Mettre à jour la config
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Sauvegarde -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-download"></i> Sauvegarde & Export</h2>
+                    </div>
+                    <div class="export-buttons">
+                        <button id="export-csv" class="btn btn-success-light btn-block">
+                            <i class="fa-solid fa-file-excel"></i> Exporter en Excel (.CSV)
+                        </button>
+                        <button id="export-pdf" class="btn btn-info-light btn-block">
+                            <i class="fa-solid fa-file-pdf"></i> Imprimer / Exporter PDF
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Colonne Droite -->
+            <div class="main-column">
+                
+                <!-- Graphique -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-chart-area"></i> Évolution Graphique du Capital</h2>
+                    </div>
+                    <div class="chart-container" id="chart-wrapper">
+                        <svg id="analytics-chart" width="100%" height="220" viewBox="0 0 600 220" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="chart-grad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="var(--primary-color)" stop-opacity="0.25"/>
+                                    <stop offset="100%" stop-color="var(--primary-color)" stop-opacity="0.0"/>
+                                </linearGradient>
+                            </defs>
+                            <g id="grid-lines"></g>
+                            <path id="chart-area-path" d="" fill="url(#chart-grad)"></path>
+                            <path id="chart-line-path" d="" fill="none" stroke="var(--primary-color)" stroke-width="3"></path>
+                            <g id="chart-dots"></g>
+                        </svg>
+                        <div id="chart-empty-msg" class="empty-message">Aucune donnée graphique disponible. Ajoutez des coupons.</div>
+                    </div>
+                </div>
+
+                <!-- Grille / Matrice Temporelle avec Accordéon -->
+                <div class="card">
+                    <div class="card-header-toggle">
+                        <h2><i class="fa-solid fa-calendar-days"></i> Matrice Temporelle du Challenge</h2>
+                        <button id="toggle-grid-btn" class="btn-icon toggle-history" title="Afficher/Masquer la matrice">
+                            <i class="fa-solid fa-chevron-up" id="toggle-grid-icon"></i>
+                        </button>
+                    </div>
+                    <div id="grid-collapsible-content" class="collapsible-content">
+                        <div id="challenge-days-grid" class="days-grid"></div>
+                    </div>
+                </div>
+
+                <!-- Statistiques -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-chart-pie"></i> Métriques & Analyses Avancées</h2>
+                    </div>
+                    <div class="stats-subgrid">
+                        <div class="stat-box">
+                            <span class="stat-title">Coupons SAFE</span>
+                            <span class="stat-value text-safe" id="stat-count-safe">0</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-title">Coupons FUN</span>
+                            <span class="stat-value text-fun" id="stat-count-fun">0</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-title">Meilleure Cote Validée</span>
+                            <span class="stat-value" id="stat-best-odds">1.00</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-title">Plus Grosse Mise</span>
+                            <span class="stat-value" id="stat-max-stake">0 F CFA</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-title">Plus Gros Gain Net</span>
+                            <span class="stat-value text-success" id="stat-max-gain">0 F CFA</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-title">Volume Total Misé</span>
+                            <span class="stat-value" id="stat-total-staked">0 F CFA</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-title">Série Max Victoires</span>
+                            <span class="stat-value text-success" id="stat-streak-win">0</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-title">Série Max Défaites</span>
+                            <span class="stat-value text-danger" id="stat-streak-loss">0</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SECTION FINALE : HISTORIQUE AVEC ACCORDÉON -->
+        <section class="card entries-section">
+            <div class="filters-header">
+                <h2><i class="fa-solid fa-list-check"></i> Historique des Engagements</h2>
+                <button id="toggle-history-btn" class="btn-icon toggle-history" title="Afficher/Masquer l'historique">
+                    <i class="fa-solid fa-chevron-up" id="toggle-history-icon"></i>
+                </button>
+            </div>
+            
+            <div id="history-collapsible-content" class="collapsible-content">
+                <div class="search-box-container">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="search-input" placeholder="Rechercher par type, cote, mise...">
+                    </div>
+                </div>
+
+                <div class="filters-bar">
+                    <button class="filter-btn active" data-filter="ALL">Tous</button>
+                    <button class="filter-btn" data-filter="SAFE"><span class="badge badge-safe">SAFE</span></button>
+                    <button class="filter-btn" data-filter="FUN"><span class="badge badge-fun">FUN</span></button>
+                    <button class="filter-btn" data-filter="WON"><span class="badge badge-won">Gagnés</span></button>
+                    <button class="filter-btn" data-filter="LOST"><span class="badge badge-lost">Perdus</span></button>
+                    <button class="filter-btn" data-filter="TODAY">Aujourd'hui</button>
+                    <button class="filter-btn" data-filter="MONTH">Ce mois</button>
+                </div>
+
+                <div id="coupons-cards-container" class="cards-container"></div>
+                <div id="cards-empty-msg" class="empty-message hidden">
+                    <i class="fa-regular fa-folder-open"></i> Aucun coupon ne correspond à ces critères.
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2026 BetTracker Pro - Système d'analyse autonome localisé.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

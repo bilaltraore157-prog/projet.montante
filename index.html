@@ -22,7 +22,6 @@
 
     <main class="dashboard-container">
         
-        <!-- LIGNE DES KPIs -->
         <section class="kpi-row">
             <div class="kpi-card">
                 <div class="kpi-icon"><i class="fa-solid fa-wallet"></i></div>
@@ -33,7 +32,7 @@
                 </div>
             </div>
             <div class="kpi-card">
-                <div class="kpi-icon text-success"><i class="fa-solid fa-money-trend-up"></i></div>
+                <div class="kpi-icon text-success"><i class="fa-solid fa-arrow-trend-up"></i></div>
                 <div class="kpi-data">
                     <span class="kpi-title">PROFIT TOTAL</span>
                     <strong id="kpi-total-profit">0 F CFA</strong>
@@ -58,7 +57,6 @@
             </div>
         </section>
 
-        <!-- BARRE DE PROGRESSION -->
         <section class="progress-section card-box">
             <div class="progress-header">
                 <span id="challenge-day-label">Jour 1 sur 30</span>
@@ -70,10 +68,8 @@
         </section>
 
         <div class="main-grid">
-            <!-- COLONNE GAUCHE (Formulaires) -->
             <div class="left-col">
                 
-                <!-- BOÎTE AJOUT COUPON (Rétractable) -->
                 <div class="card-box">
                     <div class="section-header-toggle" id="toggle-form-btn">
                         <h3 id="form-title"><i class="fa-solid fa-circle-plus"></i> Ajouter un Coupon</h3>
@@ -126,7 +122,6 @@
                     </div>
                 </div>
 
-                <!-- BOÎTE PARAMÈTRES (Rétractable) -->
                 <div class="card-box mt-3">
                     <div class="section-header-toggle" id="toggle-settings-btn">
                         <h3><i class="fa-solid fa-gear"></i> Paramètres</h3>
@@ -153,7 +148,6 @@
                     </div>
                 </div>
 
-                <!-- BOÎTE EXPORT -->
                 <div class="card-box mt-3">
                     <h3><i class="fa-solid fa-download"></i> Sauvegarde & Export</h3>
                     <div class="export-actions" style="margin-top: 15px;">
@@ -163,10 +157,8 @@
                 </div>
             </div>
 
-            <!-- COLONNE DROITE (Graphiques et Données) -->
             <div class="right-col">
                 
-                <!-- GRAPHIQUE -->
                 <div class="card-box">
                     <h3><i class="fa-solid fa-chart-area"></i> Évolution Graphique du Capital</h3>
                     <div class="chart-container">
@@ -180,7 +172,6 @@
                     </div>
                 </div>
 
-                <!-- MATRICE TEMPORELLE -->
                 <div class="card-box mt-3">
                     <div class="section-header-toggle" id="toggle-grid-btn">
                         <h3><i class="fa-solid fa-calendar-days"></i> Matrice Temporelle</h3>
@@ -190,12 +181,10 @@
                     </div>
                     <div id="grid-collapsible-content" class="collapsible-content">
                         <div class="challenge-grid" id="challenge-days-grid">
-                            <!-- Généré par JS -->
-                        </div>
+                            </div>
                     </div>
                 </div>
 
-                <!-- STATS AVANCÉES -->
                 <div class="card-box mt-3">
                     <h3><i class="fa-solid fa-chart-pie"></i> Métriques & Analyses</h3>
                     <div class="stats-grid">
@@ -210,7 +199,6 @@
                     </div>
                 </div>
 
-                <!-- HISTORIQUE DES COUPONS -->
                 <div class="card-box mt-3">
                     <div class="section-header-toggle" id="toggle-history-btn">
                         <h3><i class="fa-solid fa-list-check"></i> Historique des Paris</h3>
@@ -230,8 +218,7 @@
                             </div>
                         </div>
                         <div id="coupons-cards-container" class="cards-list">
-                            <!-- Généré par JS -->
-                        </div>
+                            </div>
                         <div id="cards-empty-msg" class="empty-state hidden">Aucun pari trouvé.</div>
                     </div>
                 </div>
@@ -245,3 +232,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+  

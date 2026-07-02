@@ -22,6 +22,7 @@
 
     <main class="dashboard-container">
         
+        <!-- LIGNE DES KPIs -->
         <section class="kpi-row">
             <div class="kpi-card">
                 <div class="kpi-icon"><i class="fa-solid fa-wallet"></i></div>
@@ -57,6 +58,7 @@
             </div>
         </section>
 
+        <!-- BARRE DE PROGRESSION -->
         <section class="progress-section card-box">
             <div class="progress-header">
                 <span id="challenge-day-label">Jour 1 sur 30</span>
@@ -68,8 +70,10 @@
         </section>
 
         <div class="main-grid">
+            <!-- COLONNE GAUCHE (Formulaires) -->
             <div class="left-col">
                 
+                <!-- BOÎTE AJOUT COUPON -->
                 <div class="card-box">
                     <div class="section-header-toggle" id="toggle-form-btn">
                         <h3 id="form-title"><i class="fa-solid fa-circle-plus"></i> Ajouter un Coupon</h3>
@@ -81,23 +85,90 @@
                         <form id="coupon-form">
                             <input type="hidden" id="edit-id">
                             
-                            <div class="form-group">
-                                <label>Date du pari</label>
-                                <input type="date" id="coupon-date" required>
+                            <!-- Ligne 1 : Date et Type de Gestion -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Date du pari</label>
+                                    <input type="date" id="coupon-date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Type Gestion</label>
+                                    <select id="coupon-type" required>
+                                        <option value="SAFE">SAFE</option>
+                                        <option value="FUN">FUN</option>
+                                    </select>
+                                </div>
                             </div>
                             
-                            <div class="form-group">
-                                <label>Type de Gestion</label>
-                                <select id="coupon-type" required>
-                                    <option value="SAFE">SAFE (Pari sécurisé)</option>
-                                    <option value="FUN">FUN (Pari risqué)</option>
-                                </select>
+                            <!-- CONTENEUR DES MATCHS INDIVIDUELS AVEC LEUR RÉSULTAT PROPRE -->
+                            <div id="match-selection-row" class="match-selectors-block">
+                                <div class="match-status-row">
+                                    <div class="form-group flex-2">
+                                        <label>Match 1</label>
+                                        <select id="coupon-market-1">
+                                            <option value="DC">Double Chance</option>
+                                            <option value="PLUS">Plus (Total Buts)</option>
+                                            <option value="MOINS">Moins (Total Buts)</option>
+                                            <option value="H_PLUS">Handicap Plus</option>
+                                            <option value="H_MOINS">Handicap Moins</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group flex-1">
+                                        <label>Statut M1</label>
+                                        <select id="coupon-status-1">
+                                            <option value="WON">Gagné</option>
+                                            <option value="LOST">Perdu</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="match-status-row">
+                                    <div class="form-group flex-2">
+                                        <label>Match 2</label>
+                                        <select id="coupon-market-2">
+                                            <option value="DC">Double Chance</option>
+                                            <option value="PLUS">Plus (Total Buts)</option>
+                                            <option value="MOINS">Moins (Total Buts)</option>
+                                            <option value="H_PLUS">Handicap Plus</option>
+                                            <option value="H_MOINS">Handicap Moins</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group flex-1">
+                                        <label>Statut M2</label>
+                                        <select id="coupon-status-2">
+                                            <option value="WON">Gagné</option>
+                                            <option value="LOST">Perdu</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="match-status-row">
+                                    <div class="form-group flex-2">
+                                        <label>Match 3</label>
+                                        <select id="coupon-market-3">
+                                            <option value="NONE">- Aucun -</option>
+                                            <option value="DC">Double Chance</option>
+                                            <option value="PLUS">Plus (Total Buts)</option>
+                                            <option value="MOINS">Moins (Total Buts)</option>
+                                            <option value="H_PLUS">Handicap Plus</option>
+                                            <option value="H_MOINS">Handicap Moins</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group flex-1">
+                                        <label>Statut M3</label>
+                                        <select id="coupon-status-3">
+                                            <option value="WON">Gagné</option>
+                                            <option value="LOST">Perdu</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
 
+                            <!-- Ligne 3 : Cote et Mise -->
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Cote</label>
-                                    <input type="number" id="coupon-odds" step="0.01" min="1.01" required>
+                                    <input type="number" id="coupon-odds" step="0.001" min="1.001" placeholder="Ex: 2.455" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Mise (F CFA)</label>
@@ -105,8 +176,9 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label>Résultat</label>
+                            <!-- Bloc Résultat global (Uniquement visible si mode FUN sélectionné) -->
+                            <div class="form-group" id="global-status-block" class="hidden">
+                                <label>Résultat du Ticket FUN</label>
                                 <div class="radio-group">
                                     <input type="radio" id="status-won" name="coupon-status" value="WON" checked>
                                     <label for="status-won" class="radio-btn won-btn"><i class="fa-solid fa-check"></i> Gagné</label>
@@ -122,6 +194,7 @@
                     </div>
                 </div>
 
+                <!-- BOÎTE PARAMÈTRES -->
                 <div class="card-box mt-3">
                     <div class="section-header-toggle" id="toggle-settings-btn">
                         <h3><i class="fa-solid fa-gear"></i> Paramètres</h3>
@@ -148,6 +221,7 @@
                     </div>
                 </div>
 
+                <!-- BOÎTE EXPORT -->
                 <div class="card-box mt-3">
                     <h3><i class="fa-solid fa-download"></i> Sauvegarde & Export</h3>
                     <div class="export-actions" style="margin-top: 15px;">
@@ -157,8 +231,10 @@
                 </div>
             </div>
 
+            <!-- COLONNE DROITE (Graphiques et Données) -->
             <div class="right-col">
                 
+                <!-- GRAPHIQUE -->
                 <div class="card-box">
                     <h3><i class="fa-solid fa-chart-area"></i> Évolution Graphique du Capital</h3>
                     <div class="chart-container">
@@ -172,6 +248,39 @@
                     </div>
                 </div>
 
+                <!-- RENDEMENT PAR OPTIONS AVEC ANALYSE DÉTAILLÉE DES FAILLES -->
+                <div class="card-box mt-3">
+                    <h3><i class="fa-solid fa-magnifying-glass-chart"></i> Analyse & Failles des Options (SAFE uniquement)</h3>
+                    <div class="options-analysis-grid">
+                        <div class="option-analysis-card" id="analysis-dc">
+                            <span class="option-name">Double Chance</span>
+                            <strong class="option-rate">0%</strong>
+                            <span class="option-details">0 V / 0 D</span>
+                        </div>
+                        <div class="option-analysis-card" id="analysis-plus">
+                            <span class="option-name">Plus (Total Buts)</span>
+                            <strong class="option-rate">0%</strong>
+                            <span class="option-details">0 V / 0 D</span>
+                        </div>
+                        <div class="option-analysis-card" id="analysis-moins">
+                            <span class="option-name">Moins (Total Buts)</span>
+                            <strong class="option-rate">0%</strong>
+                            <span class="option-details">0 V / 0 D</span>
+                        </div>
+                        <div class="option-analysis-card" id="analysis-h_plus">
+                            <span class="option-name">Handicap Plus</span>
+                            <strong class="option-rate">0%</strong>
+                            <span class="option-details">0 V / 0 D</span>
+                        </div>
+                        <div class="option-analysis-card" id="analysis-h_moins">
+                            <span class="option-name">Handicap Moins</span>
+                            <strong class="option-rate">0%</strong>
+                            <span class="option-details">0 V / 0 D</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MATRICE TEMPORELLE -->
                 <div class="card-box mt-3">
                     <div class="section-header-toggle" id="toggle-grid-btn">
                         <h3><i class="fa-solid fa-calendar-days"></i> Matrice Temporelle</h3>
@@ -181,12 +290,14 @@
                     </div>
                     <div id="grid-collapsible-content" class="collapsible-content">
                         <div class="challenge-grid" id="challenge-days-grid">
-                            </div>
+                            <!-- Généré par JS -->
+                        </div>
                     </div>
                 </div>
 
+                <!-- STATS AVANCÉES -->
                 <div class="card-box mt-3">
-                    <h3><i class="fa-solid fa-chart-pie"></i> Métriques & Analyses</h3>
+                    <h3><i class="fa-solid fa-chart-pie"></i> Métriques & Analyses Globales</h3>
                     <div class="stats-grid">
                         <div class="stat-box"><span>Coupons SAFE</span><strong id="stat-count-safe" class="text-primary">0</strong></div>
                         <div class="stat-box"><span>Coupons FUN</span><strong id="stat-count-fun" class="text-warning">0</strong></div>
@@ -199,6 +310,7 @@
                     </div>
                 </div>
 
+                <!-- HISTORIQUE DES COUPONS -->
                 <div class="card-box mt-3">
                     <div class="section-header-toggle" id="toggle-history-btn">
                         <h3><i class="fa-solid fa-list-check"></i> Historique des Paris</h3>
@@ -211,14 +323,15 @@
                             <input type="text" id="search-input" placeholder="Rechercher un pari..." class="search-box">
                             <div class="filter-buttons">
                                 <button class="filter-btn active" data-filter="ALL">Tous</button>
-                                <button class="filter-btn" data-filter="WON">Gagnés</button>
-                                <button class="filter-btn" data-filter="LOST">Perdus</button>
                                 <button class="filter-btn" data-filter="SAFE">SAFE</button>
                                 <button class="filter-btn" data-filter="FUN">FUN</button>
+                                <button class="filter-btn" data-filter="WON">Gagnés</button>
+                                <button class="filter-btn" data-filter="LOST">Perdus</button>
                             </div>
                         </div>
                         <div id="coupons-cards-container" class="cards-list">
-                            </div>
+                            <!-- Généré par JS -->
+                        </div>
                         <div id="cards-empty-msg" class="empty-state hidden">Aucun pari trouvé.</div>
                     </div>
                 </div>

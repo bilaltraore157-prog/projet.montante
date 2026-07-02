@@ -1,159 +1,699 @@
-:root {
-    --bg-body: #f4f7f6;
+/* ==========================================================================
+   VARIABLES & THÈMES
+   ========================================================================== */
+:root[data-theme="light"] {
+    --bg-main: #f4f6f9;
     --bg-card: #ffffff;
-    --text-main: #333333;
-    --text-muted: #777777;
-    --border-color: #e1e5eb;
-    --primary-color: #2b6cb0;
-    --primary-hover: #2c5282;
+    --text-main: #2d3748;
+    --text-muted: #718096;
+    --border-color: #e2e8f0;
+    --primary-color: #3182ce;
+    --primary-hover: #2b6cb0;
     --success-color: #38a169;
     --danger-color: #e53e3e;
-    --warning-color: #ed8936;
-    --chart-area: #4299e1;
-    --safe-color: #3182ce;
-    --fun-color: #d69e2e;
+    --warning-color: #dd6b20;
+    --chart-area: #3182ce;
 }
 
-[data-theme="dark"] {
-    --bg-body: #1a202c;
-    --bg-card: #2d3748;
-    --text-main: #f7fafc;
-    --text-muted: #a0aec0;
-    --border-color: #4a5568;
-    --primary-color: #63b3ed;
-    --primary-hover: #4299e1;
-    --chart-area: #63b3ed;
+:root[data-theme="dark"] {
+    --bg-main: #0f172a;
+    --bg-card: #1e293b;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --border-color: #334155;
+    --primary-color: #3b82f6;
+    --primary-hover: #2563eb;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+    --chart-area: #3b82f6;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-body { background-color: var(--bg-body); color: var(--text-main); line-height: 1.6; transition: background-color 0.3s; }
+/* ==========================================================================
+   RESET & STRUCTURE GENERALE
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
 
-/* Utilitaires */
-.mt-3 { margin-top: 1.5rem; }
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    padding: 15px;
+    transition: background-color 0.3s, color 0.3s;
+    min-height: 100vh;
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: var(--bg-card);
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.logo-area h1 {
+    font-size: 1.4rem;
+    font-weight: 800;
+}
+
+.logo-area h1 span {
+    color: var(--primary-color);
+}
+
+.logo-area p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* ==========================================================================
+   COMPOSANTS DE BASE & BOÎTES (CARDS)
+   ========================================================================== */
+.card-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.mt-3 { margin-top: 15px; }
 .w-100 { width: 100%; }
-.hidden { display: none !important; }
+
+/* Accordéons / Sections pliables */
+.section-header-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.section-header-toggle h3 {
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-toggle-icon {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.btn-toggle-icon i {
+    transition: transform 0.3s ease;
+}
+
+.btn-toggle-icon i.rotated {
+    transform: rotate(180deg);
+}
+
+.collapsible-content {
+    max-height: 2000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, margin-top 0.3s ease;
+    margin-top: 15px;
+}
+
+.collapsible-content.collapsed {
+    max-height: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* ==========================================================================
+   KPIs CARDS (STATISTIQUES RAPIDES)
+   ========================================================================== */
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.kpi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.kpi-icon {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    width: 40px;
+    text-align: center;
+}
+
+.kpi-data {
+    display: flex;
+    flex-direction: column;
+}
+
+.kpi-title {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+}
+
+.kpi-data strong {
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin: 2px 0;
+}
+
+.kpi-sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   BARRE DE PROGRESSION DU CHALLENGE
+   ========================================================================== */
+.progress-section {
+    padding: 12px 15px;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.progress-bar-container {
+    background: var(--border-color);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    background: var(--primary-color);
+    height: 100%;
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+/* ==========================================================================
+   FORMULAIRES & INPUTS
+   ========================================================================== */
+.form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-size: 0.9rem;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input:focus, select:focus {
+    border-color: var(--primary-color);
+}
+
+/* BLOC SÉLECTEURS DE MATCHS + STATUTS INDIVIDUELS */
+.match-selectors-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.match-status-row {
+    display: flex;
+    gap: 8px;
+    background: var(--bg-main);
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px dashed var(--border-color);
+}
+
+.flex-2 { flex: 2; }
+.flex-1 { flex: 1; }
+
+/* Boutons Radio Customisés pour Résultat Global FUN */
+.radio-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+    margin-bottom: 12px;
+}
+
+.radio-group input[type="radio"] {
+    display: none;
+}
+
+.radio-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 700;
+    background: var(--bg-main);
+    transition: all 0.2s;
+}
+
+.radio-group input[type="radio"]:checked + .won-btn {
+    background: var(--success-color);
+    color: white;
+    border-color: var(--success-color);
+}
+
+.radio-group input[type="radio"]:checked + .lost-btn {
+    background: var(--danger-color);
+    color: white;
+    border-color: var(--danger-color);
+}
+
+/* ==========================================================================
+   BOUTONS
+   ========================================================================== */
+button {
+    cursor: pointer;
+    font-weight: 700;
+    border-radius: 8px;
+    border: none;
+    transition: background-color 0.2s, opacity 0.2s;
+    font-size: 0.85rem;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+    padding: 12px;
+}
+.btn-primary:hover { background: var(--primary-hover); }
+
+.btn-secondary {
+    background: var(--border-color);
+    color: var(--text-main);
+    padding: 10px;
+}
+
+.btn-success {
+    background: var(--success-color);
+    color: white;
+    padding: 10px;
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: white;
+    padding: 8px 12px;
+    font-size: 0.75rem;
+}
+
+.btn-icon {
+    background: var(--border-color);
+    color: var(--text-main);
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+/* ==========================================================================
+   GRAPHIQUE EVO CAPITAL
+   ========================================================================== */
+.chart-container {
+    position: relative;
+    margin-top: 15px;
+    background: var(--bg-main);
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+}
+
+svg#main-chart {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+}
+
+/* ==========================================================================
+   RENDEMENT / FAILLE DES OPTIONS (GRILLE GRAPHIQUE)
+   ========================================================================== */
+.options-analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.option-analysis-card {
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.option-analysis-card .option-name {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.option-analysis-card .option-rate {
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin: 2px 0;
+}
+
+.option-analysis-card .option-details {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+/* Code couleur dynamique pour détecter tes meilleures failles */
+.option-analysis-card.good {
+    border-left: 4px solid var(--success-color);
+}
+.option-analysis-card.good .option-rate {
+    color: var(--success-color);
+}
+
+.option-analysis-card.bad {
+    border-left: 4px solid var(--danger-color);
+}
+.option-analysis-card.bad .option-rate {
+    color: var(--danger-color);
+}
+
+/* ==========================================================================
+   MATRICE TEMPORELLE (LES 30 JOURS)
+   ========================================================================== */
+.challenge-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+}
+
+.day-cell {
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    height: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.day-nr {
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.day-cell.active-day {
+    border: 2px solid var(--primary-color);
+    background: var(--bg-card);
+}
+
+.day-cell.completed {
+    background: rgba(56, 161, 105, 0.08);
+}
+
+/* Petits points indicateurs sous chaque jour */
+.coupon-dot-indicator {
+    display: flex;
+    gap: 3px;
+    margin-top: 2px;
+}
+
+.coupon-dot-indicator .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.coupon-dot-indicator .dot.safe { background: var(--primary-color); }
+.coupon-dot-indicator .dot.fun { background: var(--warning-color); }
+
+/* ==========================================================================
+   METRIQUES & STATS AVANCEES
+   ========================================================================== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.stat-box {
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    padding: 8px 10px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-box span {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.stat-box strong {
+    font-size: 0.9rem;
+    font-weight: 800;
+    margin-top: 2px;
+}
+
+/* ==========================================================================
+   HISTORIQUE & CARTES DES PARIS (COUPON CARDS)
+   ========================================================================== */
+.filter-bar {
+    margin-bottom: 12px;
+}
+
+.search-box {
+    margin-bottom: 8px;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.filter-buttons::-webkit-scrollbar {
+    display: none; /* Cache la barre de défilement pour esthétique */
+}
+
+.filter-btn {
+    background: var(--bg-main);
+    color: var(--text-muted);
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+.filter-btn.active {
+    background: var(--text-main);
+    color: var(--bg-card);
+}
+
+.cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.coupon-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+}
+
+/* Couleur de bordure selon le type de coupon */
+.coupon-card.type-safe { border-left: 4px solid var(--primary-color); }
+.coupon-card.type-fun { border-left: 4px solid var(--warning-color); }
+
+.card-top {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-date {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.combo-markets {
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin: 2px 0;
+}
+
+.badge {
+    font-size: 0.6rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.badge-safe { background: rgba(59, 130, 246, 0.15); color: var(--primary-color); }
+.badge-fun { background: rgba(245, 158, 11, 0.15); color: var(--warning-color); }
+.badge-won { background: rgba(16, 185, 129, 0.15); color: var(--success-color); }
+.badge-lost { background: rgba(239, 68, 68, 0.15); color: var(--danger-color); }
+
+.card-main-info {
+    display: flex;
+    background: var(--bg-main);
+    border-radius: 6px;
+    padding: 6px;
+}
+
+.info-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.info-item .label {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.info-item .val {
+    font-size: 0.85rem;
+    font-weight: 800;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.btn-icon.edit { color: var(--primary-color); background: rgba(59, 130, 246, 0.1); }
+.btn-icon.delete { color: var(--danger-color); background: rgba(239, 68, 68, 0.1); }
+
+/* États vides / Textes */
+.empty-state {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
 .text-success { color: var(--success-color) !important; }
 .text-danger { color: var(--danger-color) !important; }
 .text-primary { color: var(--primary-color) !important; }
 .text-warning { color: var(--warning-color) !important; }
 
-/* Header */
-.top-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: var(--bg-card); border-bottom: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-.logo-area h1 { font-size: 1.5rem; color: var(--text-main); }
-.logo-area h1 span { color: var(--primary-color); }
-.logo-area p { font-size: 0.85rem; color: var(--text-muted); }
-.header-actions button { margin-left: 10px; cursor: pointer; border: none; border-radius: 5px; padding: 8px 15px; font-weight: bold; transition: 0.2s; }
-.btn-icon { background: #e2e8f0; color: #4a5568; padding: 8px 12px !important; }
-.btn-danger { background: var(--danger-color); color: white; }
+/* UTILS GLOBAL */
+.hidden { display: none !important; }
 
-/* Main Layout */
-.dashboard-container { max-width: 1300px; margin: 20px auto; padding: 0 15px; }
-.main-grid { display: grid; grid-template-columns: 320px 1fr; gap: 20px; }
-@media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
 
-/* Cards & Sections */
-.card-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-.card-box h3 { font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-
-/* Collapsible / Accordéon */
-.section-header-toggle { display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
-.section-header-toggle h3 { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-.btn-toggle-icon { background: none; border: none; color: var(--text-muted); font-size: 1.1rem; cursor: pointer; }
-.btn-toggle-icon i { transition: transform 0.3s ease; }
-.btn-toggle-icon i.rotated { transform: rotate(180deg); }
-.collapsible-content { display: block; }
-.collapsible-content.collapsed { display: none; }
-
-/* KPIs */
-.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
-.kpi-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; display: flex; align-items: center; gap: 15px; border-left: 4px solid var(--primary-color); }
-.kpi-icon { font-size: 1.5rem; color: var(--text-muted); background: var(--bg-body); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-.kpi-data { display: flex; flex-direction: column; }
-.kpi-title { font-size: 0.75rem; font-weight: bold; color: var(--text-muted); text-transform: uppercase; }
-.kpi-data strong { font-size: 1.3rem; }
-.kpi-sub { font-size: 0.8rem; color: var(--text-muted); }
-
-/* Progress Bar */
-.progress-section { margin-bottom: 20px; }
-.progress-header { display: flex; justify-content: space-between; font-weight: bold; font-size: 0.9rem; margin-bottom: 8px; }
-.progress-bar-container { width: 100%; height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden; }
-.progress-bar-fill { height: 100%; background: var(--primary-color); width: 0%; transition: width 0.5s ease; }
-
-/* Formulaires */
-.form-group { margin-bottom: 12px; }
-.form-group label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: var(--text-muted); }
-.form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; background: var(--bg-body); color: var(--text-main); outline: none; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-/* Radio Buttons Custom (Gagné/Perdu) */
-.radio-group { display: flex; gap: 10px; }
-.radio-group input[type="radio"] { display: none; }
-.radio-btn { flex: 1; text-align: center; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; cursor: pointer; font-weight: bold; background: var(--bg-body); transition: 0.2s; color: var(--text-muted); }
-
-/* État quand "Gagné" est sélectionné */
-#status-won:checked + .won-btn { background: #c6f6d5; border-color: var(--success-color); color: var(--success-color); }
-
-/* État quand "Perdu" est sélectionné - Version Rouge Harmonieuse */
-#status-lost:checked + .lost-btn { background: #fed7d7; border-color: var(--danger-color); color: var(--danger-color); }
-/* Boutons */
-button.btn-primary { background: var(--primary-color); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-button.btn-primary:hover { background: var(--primary-hover); }
-button.btn-secondary { background: #e2e8f0; color: #4a5568; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-button.btn-success { background: var(--success-color); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-
-/* Graphique */
-.chart-container { width: 100%; height: 220px; position: relative; }
-.chart-container svg { width: 100%; height: 100%; }
-.empty-state { text-align: center; padding: 30px; color: var(--text-muted); font-style: italic; }
-
-/* Matrice Temporelle (Grille) */
-.challenge-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; }
-.day-cell { border: 1px solid var(--border-color); border-radius: 4px; padding: 8px 2px; text-align: center; position: relative; background: var(--bg-body); min-height: 45px; }
-.day-nr { font-size: 0.8rem; font-weight: bold; color: var(--text-muted); }
-.day-cell.active-day { border-color: var(--primary-color); box-shadow: 0 0 5px rgba(43, 108, 176, 0.3); }
-.day-cell.completed { background: #c6f6d5; border-color: var(--success-color); }
-.coupon-dot-indicator { display: flex; justify-content: center; gap: 3px; margin-top: 5px; }
-.dot { width: 6px; height: 6px; border-radius: 50%; }
-.dot.safe { background: var(--safe-color); }
-.dot.fun { background: var(--fun-color); }
-@media (max-width: 600px) { .challenge-grid { grid-template-columns: repeat(5, 1fr); } }
-
-/* Stats Avancées */
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
-.stat-box { background: var(--bg-body); padding: 10px; border-radius: 5px; text-align: center; border: 1px solid var(--border-color); }
-.stat-box span { display: block; font-size: 0.75rem; color: var(--text-muted); }
-.stat-box strong { font-size: 1.1rem; }
-
-/* Filtres et Liste Historique */
-.filter-bar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
-.search-box { flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 5px; background: var(--bg-body); color: var(--text-main); }
-.filter-buttons { display: flex; gap: 5px; }
-.filter-btn { padding: 6px 12px; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-main); border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
-.filter-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
-
-.cards-list { display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 5px; }
-.coupon-card { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 15px; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-body); border-left: 4px solid #cbd5e0; }
-.coupon-card.type-safe { border-left-color: var(--safe-color); }
-.coupon-card.type-fun { border-left-color: var(--fun-color); }
-.card-top { display: flex; flex-direction: column; gap: 5px; }
-.card-date { font-size: 0.8rem; font-weight: bold; color: var(--text-muted); }
-.badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: white; }
-.badge-safe { background: var(--safe-color); }
-.badge-fun { background: var(--fun-color); }
-.badge-won { background: var(--success-color); }
-.badge-lost { background: var(--danger-color); }
-.card-main-info { display: flex; gap: 15px; flex: 1; }
-.info-item { display: flex; flex-direction: column; }
-.info-item .label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
-.info-item .val { font-weight: bold; font-size: 0.95rem; }
-.card-actions button { background: none; border: none; cursor: pointer; padding: 5px; border-radius: 4px; transition: 0.2s; }
-.card-actions .edit { color: var(--primary-color); }
-.card-actions .delete { color: var(--danger-color); }
-.card-actions button:hover { background: #e2e8f0; }
-
-/* Toasts / Notifications */
-#toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 9999; }
-.toast { background: var(--bg-card); color: var(--text-main); padding: 12px 20px; border-radius: 5px; border-left: 4px solid var(--primary-color); box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s forwards; }
-.toast.success { border-left-color: var(--success-color); }
-.toast.danger { border-left-color: var(--danger-color); }
-@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+/* ==========================================================================
+   RESPONSIVE DESIGN & ADAPTATION TABLETTES / PC (MEDIA QUERIES)
+   ========================================================================== */
+@media (min-width: 768px) {
+    body { padding: 25px; }
+    
+    .kpi-row {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+    }
+    
+    .main-grid {
+        display: grid;
+        grid-template-columns: 380px 1fr;
+        gap: 20px;
+        align-items: start;
+    }
+    
+    .challenge-grid {
+        grid-template-columns: repeat(10, 1fr);
+    }
+    
+    .options-analysis-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .logo-area h1 { font-size: 1.7rem; }
+}

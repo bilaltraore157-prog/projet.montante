@@ -283,7 +283,7 @@ input:focus, select:focus {
 .flex-2 { flex: 2; }
 .flex-1 { flex: 1; }
 
-/* Boutons Radio Customisés pour Résultat Global FUN */
+/* Boutons Radio Customisés */
 .radio-group {
     display: flex;
     gap: 10px;
@@ -429,7 +429,6 @@ svg#main-chart {
     color: var(--text-muted);
 }
 
-/* Code couleur dynamique pour détecter tes meilleures failles */
 .option-analysis-card.good {
     border-left: 4px solid var(--success-color);
 }
@@ -479,7 +478,6 @@ svg#main-chart {
     background: rgba(56, 161, 105, 0.08);
 }
 
-/* Petits points indicateurs sous chaque jour */
 .coupon-dot-indicator {
     display: flex;
     gap: 3px;
@@ -533,10 +531,6 @@ svg#main-chart {
     margin-bottom: 12px;
 }
 
-.search-box {
-    margin-bottom: 8px;
-}
-
 .filter-buttons {
     display: flex;
     gap: 4px;
@@ -545,7 +539,7 @@ svg#main-chart {
 }
 
 .filter-buttons::-webkit-scrollbar {
-    display: none; /* Cache la barre de défilement pour esthétique */
+    display: none;
 }
 
 .filter-btn {
@@ -578,7 +572,6 @@ svg#main-chart {
     position: relative;
 }
 
-/* Couleur de bordure selon le type de coupon */
 .coupon-card.type-safe { border-left: 4px solid var(--primary-color); }
 .coupon-card.type-fun { border-left: 4px solid var(--warning-color); }
 
@@ -647,7 +640,6 @@ svg#main-chart {
 .btn-icon.edit { color: var(--primary-color); background: rgba(59, 130, 246, 0.1); }
 .btn-icon.delete { color: var(--danger-color); background: rgba(239, 68, 68, 0.1); }
 
-/* États vides / Textes */
 .empty-state {
     text-align: center;
     padding: 20px;
@@ -661,12 +653,10 @@ svg#main-chart {
 .text-primary { color: var(--primary-color) !important; }
 .text-warning { color: var(--warning-color) !important; }
 
-/* UTILS GLOBAL */
 .hidden { display: none !important; }
 
-
 /* ==========================================================================
-   RESPONSIVE DESIGN & ADAPTATION TABLETTES / PC (MEDIA QUERIES)
+   RESPONSIVE DESIGN (MEDIA QUERIES)
    ========================================================================== */
 @media (min-width: 768px) {
     body { padding: 25px; }
@@ -688,7 +678,7 @@ svg#main-chart {
     }
     
     .options-analysis-grid {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
     
     .stats-grid {

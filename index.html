@@ -89,7 +89,7 @@
                                         <option value="SAFE">SAFE (Pari sécurisé)</option>
                                         <option value="FUN">FUN (Pari fun/grosse cote)</option>
                                     </select>
-                               </div>
+                                </div>
                             </div>
 
                             <div class="match-selectors-block">
@@ -214,8 +214,7 @@
 
                 <div class="card-box">
                     <h3><i class="fas fa-search-plus text-primary"></i> Analyse & Failles des Options</h3>
-                    <div class="options-analysis-grid" id="options-analysis-container">
-                        </div>
+                    <div class="options-analysis-grid" id="options-analysis-container"></div>
                 </div>
 
                 <div class="card-box">
@@ -224,8 +223,7 @@
                         <button class="btn-toggle-icon"><i class="fas fa-chevron-up"></i></button>
                     </div>
                     <div id="matrix-content" class="collapsible-content">
-                        <div class="challenge-grid" id="challenge-days-grid">
-                            </div>
+                        <div class="challenge-grid" id="challenge-days-grid"></div>
                     </div>
                 </div>
 
@@ -243,19 +241,24 @@
                     </div>
                 </div>
 
+                <!-- BLOC HISTORIQUE MODIFIÉ POUR ÊTRE ACCORDÉON (OUVRIR/FERMER) -->
                 <div class="card-box">
-                    <h3><i class="fas fa-history text-muted"></i> Historique des Paris</h3>
-                    <div class="filter-bar mt-3">
-                        <div class="filter-buttons">
-                            <button class="filter-btn active" data-filter="all">Tous</button>
-                            <button class="filter-btn" data-filter="SAFE">SAFE</button>
-                            <button class="filter-btn" data-filter="FUN">FUN</button>
-                            <button class="filter-btn" data-filter="Gagné">Gagnés</button>
-                            <button class="filter-btn" data-filter="Perdu">Perdus</button>
-                        </div>
+                    <div class="section-header-toggle" id="toggle-history" style="cursor: pointer;">
+                        <h3><i class="fas fa-history text-muted"></i> Historique des Paris</h3>
+                        <button class="btn-toggle-icon"><i class="fas fa-chevron-up"></i></button>
                     </div>
-                    <div class="cards-list" id="coupons-history-list">
+                    <div id="history-content" class="collapsible-content">
+                        <div class="filter-bar mt-3">
+                            <div class="filter-buttons">
+                                <button class="filter-btn active" data-filter="all">Tous</button>
+                                <button class="filter-btn" data-filter="SAFE">SAFE</button>
+                                <button class="filter-btn" data-filter="FUN">FUN</button>
+                                <button class="filter-btn" data-filter="Gagné">Gagnés</button>
+                                <button class="filter-btn" data-filter="Perdu">Perdus</button>
+                            </div>
                         </div>
+                        <div class="cards-list" id="coupons-history-list"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -264,4 +267,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-  

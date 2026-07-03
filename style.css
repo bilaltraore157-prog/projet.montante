@@ -105,6 +105,7 @@ body {
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+    user-select: none;
 }
 
 .section-header-toggle h3 {
@@ -131,15 +132,12 @@ body {
 }
 
 .collapsible-content {
-    max-height: 2000px;
-    overflow: hidden;
     transition: max-height 0.3s ease-in-out, margin-top 0.3s ease;
     margin-top: 15px;
 }
 
 .collapsible-content.collapsed {
-    max-height: 0 !important;
-    margin-top: 0 !important;
+    display: none !important;
 }
 
 /* ==========================================================================
@@ -373,14 +371,14 @@ button {
 }
 
 /* ==========================================================================
-   GRAPHIQUE EVO CAPITAL
+   GRAPHIQUE EVO CAPITAL (MIS À JOUR POUR LE NOUVEAU GRAPHISME DYNAMIQUE)
    ========================================================================== */
 .chart-container {
     position: relative;
     margin-top: 15px;
     background: var(--bg-main);
     border-radius: 8px;
-    padding: 10px;
+    padding: 12px;
     border: 1px solid var(--border-color);
 }
 
@@ -389,6 +387,17 @@ svg#main-chart {
     height: auto;
     display: block;
     overflow: visible;
+}
+
+/* Animation et effet sur les points du graphique au survol */
+svg#main-chart circle {
+    transition: r 0.2s ease, stroke-width 0.2s ease;
+    cursor: pointer;
+}
+
+svg#main-chart circle:hover {
+    r: 6;
+    stroke-width: 3px;
 }
 
 /* ==========================================================================
@@ -686,18 +695,4 @@ svg#main-chart {
     }
     
     .logo-area h1 { font-size: 1.7rem; }
-}
-/* Cache le contenu quand la classe collapsed est présente */
-.collapsible-content.collapsed {
-    display: none !important;
-}
-
-/* Fait pivoter la flèche quand c'est fermé */
-.btn-toggle-icon i.rotated {
-    transform: rotate(180deg);
-}
-
-/* Transition douce pour la flèche */
-.btn-toggle-icon i {
-    transition: transform 0.3s ease;
 }

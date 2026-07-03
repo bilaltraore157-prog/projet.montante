@@ -9,6 +9,7 @@ let config = {
 };
 
 let coupons = [];
+let editingCouponId = null; // Stocke l'ID du coupon en cours de modification
 
 // Liste mise à jour avec OUI et NON pour "Les 2 équipes marquent"
 const PRESET_OPTIONS = [
@@ -55,7 +56,7 @@ function toggleMatchSelectors() {
         // Réinitialise les sélections quand on masque
         document.querySelectorAll(".match-option-select").forEach(s => s.value = "");
     } else {
-        matchBlock.style.display = "flex"; // <-- CORRIGÉ ICI (plus de .style.style)
+        matchBlock.style.display = "flex";
     }
 }
 
@@ -79,12 +80,13 @@ function setupEventListeners() {
         });
     }
 
-    // Sections pliables / Accordéons
+    // Sections pliables / Accordéons (Ajout de l'historique ici)
     setupCollapsible("toggle-form-coupon", "form-coupon-content");
     setupCollapsible("toggle-params", "params-content");
     setupCollapsible("toggle-matrix", "matrix-content");
+    setupCollapsible("toggle-history", "history-content"); // <-- Rend l'historique pliable
 
-    // Formulaire d'ajout de coupon
+    // Formulaire d'ajout / modification de coupon
     const couponForm = document.getElementById("coupon-form");
     if (couponForm) {
         couponForm.addEventListener("submit", (e) => {
@@ -229,7 +231,6 @@ function updateDashboard() {
     let progressPercent = Math.min(((currentCapital - config.initialCapital) / (config.targetCapital - config.initialCapital)) * 100, 100);
     if (progressPercent < 0) progressPercent = 0;
 
-    // Rendu sécurisé des éléments HTML (vérification de l'existence de l'ID)
     if(document.getElementById("kpi-capital")) document.getElementById("kpi-capital").innerText = currentCapital.toFixed(0) + " F CFA";
     if(document.getElementById("kpi-initial-label")) document.getElementById("kpi-initial-label").innerText = "Départ: " + config.initialCapital + " F";
     
@@ -455,7 +456,9 @@ function renderHistory(filterType) {
                 <div class="info-item"><span class="label">MISE</span><span class="val">${cp.stake} F</span></div>
                 <div class="info-item"><span class="label">BILAN NET</span><span class="val ${gainClass}">${gainText}</span></div>
             </div>
-            <div class="card-actions">
+            <div class="card-actions" style="display: flex; gap: 8px; justify-content: flex-end;">
+                <!-- AJOUT DE L'ICONE MODIFIER CI-DESSOUS -->
+                <button class="btn-icon edit" onclick="editCoupon('${cp.id}')" title="Modifier" style="background: var(--bg-secondary); color: var(--primary-color); border: 1px solid var(--border-color); padding: 6px 10px; border-radius: 6px; cursor: pointer;"><i class="fas fa-edit"></i></button>
                 <button class="btn-icon delete" onclick="deleteCoupon('${cp.id}')" title="Supprimer"><i class="fas fa-trash-alt"></i></button>
             </div>
         `;
@@ -464,10 +467,60 @@ function renderHistory(filterType) {
 }
 
 // ==========================================================================
-// ACTIONS DE SAISIE ET PERSISTANCE
+// ACTIONS DE SAISIE, MODIFICATION ET PERSISTANCE
 // ==========================================================================
+
+// Fonction pour charger un coupon dans le formulaire pour le modifier
+function editCoupon(id) {
+    const coupon = coupons.find(c => c.id === id);
+    if (!coupon) return;
+
+    editingCouponId = id; // Passer l'application en mode "Edition"
+
+    // Remplir les champs principaux
+    document.getElementById("coupon-date").value = coupon.date;
+    document.getElementById("coupon-type").value = coupon.type;
+    document.getElementById("coupon-odds").value = coupon.odds;
+    document.getElementById("coupon-stake").value = coupon.stake;
+
+    // Sélectionner le bon bouton radio pour le résultat
+    const radioResult = document.querySelector(`input[name="coupon-result"][value="${coupon.result}"]`);
+    if (radioResult) radioResult.checked = true;
+
+    // Afficher/masquer le bloc des matchs selon le type de gestion chargé
+    toggleMatchSelectors();
+
+    // Remplir les options de match si ce n'est pas un pari FUN
+    if (coupon.type !== "FUN" && coupon.matches) {
+        coupon.matches.forEach((m, idx) => {
+            let matchNr = idx + 1;
+            let optSelect = document.querySelector(`.match-option-select[data-match="${matchNr}"]`);
+            let statSelect = document.querySelector(`.match-status-select[data-match="${matchNr}"]`);
+            if (optSelect) optSelect.value = m.name;
+            if (statSelect) statSelect.value = m.status;
+        });
+    }
+
+    // Changer le texte du bouton de soumission du formulaire
+    const submitBtn = document.querySelector("#coupon-form button[type='submit']");
+    if (submitBtn) {
+        submitBtn.innerHTML = `<i class="fas fa-save"></i> Mettre à jour le Coupon`;
+        submitBtn.style.background = "var(--primary-color)";
+    }
+
+    // Ouvrir automatiquement le panneau du formulaire s'il était fermé
+    const formContent = document.getElementById("form-coupon-content");
+    if (formContent && formContent.classList.contains("collapsed")) {
+        formContent.classList.remove("collapsed");
+        const triggerIcon = document.querySelector("#toggle-form-coupon .btn-toggle-icon i");
+        if (triggerIcon) triggerIcon.classList.remove("rotated");
+    }
+
+    // Remonter doucement l'écran vers le formulaire pour voir les modifs
+    document.getElementById("toggle-form-coupon").scrollIntoView({ behavior: 'smooth' });
+}
+
 function saveCoupon() {
-    const id = Date.now().toString();
     const date = document.getElementById("coupon-date").value;
     const type = document.getElementById("coupon-type").value;
     const odds = parseFloat(document.getElementById("coupon-odds").value);
@@ -489,12 +542,28 @@ function saveCoupon() {
         }
     }
 
-    const newCoupon = { id, date, type, odds, stake, result, matches };
-    coupons.push(newCoupon);
+    if (editingCouponId) {
+        // Mode Modification : Mettre à jour le coupon existant
+        const index = coupons.findIndex(c => c.id === editingCouponId);
+        if (index !== -1) {
+            coupons[index] = { id: editingCouponId, date, type, odds, stake, result, matches };
+        }
+        editingCouponId = null; // Quitter le mode édition
+        
+        // Remettre le bouton normal
+        const submitBtn = document.querySelector("#coupon-form button[type='submit']");
+        if (submitBtn) submitBtn.innerHTML = `<i class="fas fa-plus-circle"></i> Ajouter au Historique`;
+    } else {
+        // Mode Ajout classique
+        const id = Date.now().toString();
+        const newCoupon = { id, date, type, odds, stake, result, matches };
+        coupons.push(newCoupon);
+    }
     
     saveData();
     updateDashboard();
 
+    // Vider les champs
     document.getElementById("coupon-odds").value = "";
     document.querySelectorAll(".match-option-select").forEach(s => s.value = "");
     
@@ -504,6 +573,12 @@ function saveCoupon() {
 
 function deleteCoupon(id) {
     if (confirm("Supprimer ce coupon définitivement ?")) {
+        // Si on supprime le coupon qu'on était en train de modifier, on annule l'édition
+        if (editingCouponId === id) {
+            editingCouponId = null;
+            const submitBtn = document.querySelector("#coupon-form button[type='submit']");
+            if (submitBtn) submitBtn.innerHTML = `<i class="fas fa-plus-circle"></i> Ajouter au Historique`;
+        }
         coupons = coupons.filter(c => c.id !== id);
         saveData();
         updateDashboard();

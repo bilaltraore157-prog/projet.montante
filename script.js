@@ -80,11 +80,11 @@ function setupEventListeners() {
         });
     }
 
-    // Sections pliables / Accordéons (Ajout de l'historique ici)
+    // Sections pliables / Accordéons
     setupCollapsible("toggle-form-coupon", "form-coupon-content");
     setupCollapsible("toggle-params", "params-content");
     setupCollapsible("toggle-matrix", "matrix-content");
-    setupCollapsible("toggle-history", "history-content"); // <-- Rend l'historique pliable
+    setupCollapsible("toggle-history", "history-content"); 
 
     // Formulaire d'ajout / modification de coupon
     const couponForm = document.getElementById("coupon-form");
@@ -145,16 +145,15 @@ function setupEventListeners() {
     if (fileImport) fileImport.addEventListener("change", importData);
 }
 
+// Fonction de pliage optimisée pour le clic sur les icônes
 function setupCollapsible(triggerId, contentId) {
     const trigger = document.getElementById(triggerId);
     const content = document.getElementById(contentId);
     if (!trigger || !content) return;
 
     trigger.addEventListener("click", (e) => {
-        // Alterne la classe pour afficher/masquer
         content.classList.toggle("collapsed");
         
-        // Alterne la rotation de la flèche
         const icon = trigger.querySelector(".btn-toggle-icon i");
         if (icon) {
             icon.classList.toggle("rotated");
@@ -348,6 +347,7 @@ function renderTemporalMatrix() {
     }
 }
 
+// NOUVELLE FONCTION GRAPHIQUE : EVOLUTION DYNAMIQUE STYLE FINANCIER
 function renderChart() {
     const svg = document.getElementById("main-chart");
     if (!svg) return;
@@ -358,8 +358,9 @@ function renderChart() {
         return;
     }
 
-    let capitalPoints = [config.initialCapital];
     let current = config.initialCapital;
+    let capitalPoints = [current];
+
     coupons.forEach(cp => {
         if (cp.result === "Gagné") {
             current += (cp.stake * cp.odds) - cp.stake;
@@ -369,50 +370,92 @@ function renderChart() {
         capitalPoints.push(current);
     });
 
-    let maxVal = Math.max(...capitalPoints, config.targetCapital) * 1.1;
-    let minVal = Math.min(...capitalPoints, config.initialCapital) * 0.9;
-    if (minVal < 0) minVal = 0;
-
     let width = 500;
     let height = 150;
-    let padding = 20;
+    let padding = 15;
 
-    let pointsStr = "";
+    let maxVal = Math.max(...capitalPoints, config.initialCapital);
+    let minVal = Math.min(...capitalPoints, config.initialCapital);
 
-    capitalPoints.forEach((val, idx) => {
+    if (maxVal === minVal) {
+        maxVal += 5000;
+        minVal -= 5000;
+    }
+
+    let valRange = (maxVal - minVal) * 1.1;
+    let midVal = (maxVal + minVal) / 2;
+    let adjustedMin = midVal - valRange / 2;
+    let adjustedMax = midVal + valRange / 2;
+
+    let coords = capitalPoints.map((val, idx) => {
         let x = padding + (idx / (capitalPoints.length - 1)) * (width - padding * 2);
-        let y = height - padding - ((val - minVal) / (maxVal - minVal)) * (height - padding * 2);
-        pointsStr += `${x},${y} `;
-        
-        if (idx === 0 || idx === capitalPoints.length - 1) {
+        let y = height - padding - ((val - adjustedMin) / (adjustedMax - adjustedMin)) * (height - padding * 2);
+        return { x, y, value: val };
+    });
+
+    // Définition du Gradient dégradé sous la courbe
+    let defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+    defs.innerHTML = `
+        <linearGradient id="chart-gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--primary-color, #2563eb)" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="var(--primary-color, #2563eb)" stop-opacity="0.00"/>
+        </linearGradient>
+    `;
+    svg.appendChild(defs);
+
+    // Ligne pointillée repère pour le Capital Initial
+    let startY = height - padding - ((config.initialCapital - adjustedMin) / (adjustedMax - adjustedMin)) * (height - padding * 2);
+    let baseLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    baseLine.setAttribute("x1", padding);
+    baseLine.setAttribute("y1", startY);
+    baseLine.setAttribute("x2", width - padding);
+    baseLine.setAttribute("y2", startY);
+    baseLine.setAttribute("stroke", "#94a3b8");
+    baseLine.setAttribute("stroke-dasharray", "4,4");
+    baseLine.setAttribute("stroke-width", "1");
+    baseLine.setAttribute("opacity", "0.5");
+    svg.appendChild(baseLine);
+
+    // Construction du chemin de la ligne principale
+    let pathD = `M ${coords[0].x} ${coords[0].y}`;
+    for (let i = 1; i < coords.length; i++) {
+        pathD += ` L ${coords[i].x} ${coords[i].y}`;
+    }
+
+    let polyline = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    polyline.setAttribute("d", pathD);
+    polyline.setAttribute("fill", "none");
+    polyline.setAttribute("stroke", "var(--primary-color, #2563eb)");
+    polyline.setAttribute("stroke-width", "3");
+    polyline.setAttribute("stroke-linecap", "round");
+    polyline.setAttribute("stroke-linejoin", "round");
+    svg.appendChild(polyline);
+
+    // Zone dégradée de fond
+    let areaD = `${pathD} L ${coords[coords.length - 1].x} ${height - padding} L ${coords[0].x} ${height - padding} Z`;
+    let areaPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    areaPath.setAttribute("d", areaD);
+    areaPath.setAttribute("fill", "url(#chart-gradient)");
+    svg.appendChild(areaPath);
+
+    // Cercles repères interactifs aux extrémités et intermédiaires
+    coords.forEach((pt, idx) => {
+        if (coords.length < 15 || idx === 0 || idx === coords.length - 1 || idx % Math.floor(coords.length / 5) === 0) {
             let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            circle.setAttribute("cx", x);
-            circle.setAttribute("cy", y);
+            circle.setAttribute("cx", pt.x);
+            circle.setAttribute("cy", pt.y);
             circle.setAttribute("r", "4");
-            circle.setAttribute("fill", idx === 0 ? "var(--text-muted)" : "var(--success-color)");
+            circle.setAttribute("fill", idx === coords.length - 1 ? "var(--success-color, #10b981)" : "#ffffff");
+            circle.setAttribute("stroke", "var(--primary-color, #2563eb)");
+            circle.setAttribute("stroke-width", "2");
+
+            let title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+            title.textContent = `Étape ${idx} : ${Math.round(pt.value)} F CFA`;
+            circle.appendChild(title);
+
             svg.appendChild(circle);
         }
     });
-
-    let polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-    polyline.setAttribute("points", pointsStr);
-    polyline.setAttribute("fill", "none");
-    polyline.setAttribute("stroke", "var(--primary-color)");
-    polyline.setAttribute("stroke-width", "3");
-    svg.appendChild(polyline);
-
-    let targetY = height - padding - ((config.targetCapital - minVal) / (maxVal - minVal)) * (height - padding * 2);
-    if (targetY >= 0 && targetY <= height) {
-        let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", padding);
-        line.setAttribute("y1", targetY);
-        line.setAttribute("x2", width - padding);
-        line.setAttribute("y2", targetY);
-        line.setAttribute("stroke", "var(--danger-color)");
-        line.setAttribute("stroke-dasharray", "4,4");
-        line.setAttribute("stroke-width", "1");
-        svg.appendChild(line);
-    }
 }
 
 function renderHistory(filterType) {
@@ -462,7 +505,6 @@ function renderHistory(filterType) {
                 <div class="info-item"><span class="label">BILAN NET</span><span class="val ${gainClass}">${gainText}</span></div>
             </div>
             <div class="card-actions" style="display: flex; gap: 8px; justify-content: flex-end;">
-                <!-- AJOUT DE L'ICONE MODIFIER CI-DESSOUS -->
                 <button class="btn-icon edit" onclick="editCoupon('${cp.id}')" title="Modifier" style="background: var(--bg-secondary); color: var(--primary-color); border: 1px solid var(--border-color); padding: 6px 10px; border-radius: 6px; cursor: pointer;"><i class="fas fa-edit"></i></button>
                 <button class="btn-icon delete" onclick="deleteCoupon('${cp.id}')" title="Supprimer"><i class="fas fa-trash-alt"></i></button>
             </div>
@@ -474,28 +516,22 @@ function renderHistory(filterType) {
 // ==========================================================================
 // ACTIONS DE SAISIE, MODIFICATION ET PERSISTANCE
 // ==========================================================================
-
-// Fonction pour charger un coupon dans le formulaire pour le modifier
 function editCoupon(id) {
     const coupon = coupons.find(c => c.id === id);
     if (!coupon) return;
 
-    editingCouponId = id; // Passer l'application en mode "Edition"
+    editingCouponId = id;
 
-    // Remplir les champs principaux
     document.getElementById("coupon-date").value = coupon.date;
     document.getElementById("coupon-type").value = coupon.type;
     document.getElementById("coupon-odds").value = coupon.odds;
     document.getElementById("coupon-stake").value = coupon.stake;
 
-    // Sélectionner le bon bouton radio pour le résultat
     const radioResult = document.querySelector(`input[name="coupon-result"][value="${coupon.result}"]`);
     if (radioResult) radioResult.checked = true;
 
-    // Afficher/masquer le bloc des matchs selon le type de gestion chargé
     toggleMatchSelectors();
 
-    // Remplir les options de match si ce n'est pas un pari FUN
     if (coupon.type !== "FUN" && coupon.matches) {
         coupon.matches.forEach((m, idx) => {
             let matchNr = idx + 1;
@@ -506,14 +542,12 @@ function editCoupon(id) {
         });
     }
 
-    // Changer le texte du bouton de soumission du formulaire
     const submitBtn = document.querySelector("#coupon-form button[type='submit']");
     if (submitBtn) {
         submitBtn.innerHTML = `<i class="fas fa-save"></i> Mettre à jour le Coupon`;
         submitBtn.style.background = "var(--primary-color)";
     }
 
-    // Ouvrir automatiquement le panneau du formulaire s'il était fermé
     const formContent = document.getElementById("form-coupon-content");
     if (formContent && formContent.classList.contains("collapsed")) {
         formContent.classList.remove("collapsed");
@@ -521,7 +555,6 @@ function editCoupon(id) {
         if (triggerIcon) triggerIcon.classList.remove("rotated");
     }
 
-    // Remonter doucement l'écran vers le formulaire pour voir les modifs
     document.getElementById("toggle-form-coupon").scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -548,18 +581,15 @@ function saveCoupon() {
     }
 
     if (editingCouponId) {
-        // Mode Modification : Mettre à jour le coupon existant
         const index = coupons.findIndex(c => c.id === editingCouponId);
         if (index !== -1) {
             coupons[index] = { id: editingCouponId, date, type, odds, stake, result, matches };
         }
-        editingCouponId = null; // Quitter le mode édition
+        editingCouponId = null;
         
-        // Remettre le bouton normal
         const submitBtn = document.querySelector("#coupon-form button[type='submit']");
         if (submitBtn) submitBtn.innerHTML = `<i class="fas fa-plus-circle"></i> Ajouter au Historique`;
     } else {
-        // Mode Ajout classique
         const id = Date.now().toString();
         const newCoupon = { id, date, type, odds, stake, result, matches };
         coupons.push(newCoupon);
@@ -568,7 +598,6 @@ function saveCoupon() {
     saveData();
     updateDashboard();
 
-    // Vider les champs
     document.getElementById("coupon-odds").value = "";
     document.querySelectorAll(".match-option-select").forEach(s => s.value = "");
     
@@ -578,7 +607,6 @@ function saveCoupon() {
 
 function deleteCoupon(id) {
     if (confirm("Supprimer ce coupon définitivement ?")) {
-        // Si on supprime le coupon qu'on était en train de modifier, on annule l'édition
         if (editingCouponId === id) {
             editingCouponId = null;
             const submitBtn = document.querySelector("#coupon-form button[type='submit']");
@@ -608,7 +636,6 @@ function loadData() {
     }
 }
 
-// Export & Import
 function exportData() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ config, coupons }));
     const downloadAnchor = document.createElement('a');
@@ -638,7 +665,6 @@ function importData(e) {
     }
 }
 
-// Formatage de date
 function formatDateStr(dateStr) {
     if (!dateStr) return "";
     const parts = dateStr.split("-");

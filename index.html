@@ -4,88 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BetTracker Pro - Challenge 30 Jours</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <div class="dashboard-container">
+        <header class="top-header">
+            <div class="logo-area">
+                <h1>BetTracker <span>Pro</span></h1>
+                <p>Suivi de Challenge Paris Sportifs</p>
+            </div>
+            <div class="header-actions">
+                <button id="theme-toggle" class="btn-icon" title="Changer de thème">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="btn-reset" class="btn-danger" title="Réinitialiser tout le challenge">
+                    <i class="fas fa-trash-alt"></i> Réinitialiser
+                </button>
+            </div>
+        </header>
 
-    <header class="top-header">
-        <div class="logo-area">
-            <h1>BetTracker <span>Pro</span></h1>
-            <p>Suivi de Challenge Paris Sportifs</p>
-        </div>
-        <div class="header-actions">
-            <button id="theme-toggle" class="btn-icon"><i class="fa-solid fa-moon"></i></button>
-            <button id="reset-challenge" class="btn-danger"><i class="fa-solid fa-trash"></i> Réinitialiser</button>
-        </div>
-    </header>
-
-    <main class="dashboard-container">
-        
-        <!-- LIGNE DES KPIs -->
-        <section class="kpi-row">
-            <div class="kpi-card">
-                <div class="kpi-icon"><i class="fa-solid fa-wallet"></i></div>
+        <div class="kpi-row">
+            <div class="kpi-card" style="border-left: 4px solid var(--primary-color);">
+                <div class="kpi-icon"><i class="fas fa-wallet"></i></div>
                 <div class="kpi-data">
                     <span class="kpi-title">CAPITAL ACTUEL</span>
-                    <strong id="kpi-current-capital">0 F CFA</strong>
-                    <span class="kpi-sub" id="kpi-initial-capital">Départ: 0 F CFA</span>
+                    <strong id="kpi-capital">30 000 F CFA</strong>
+                    <span class="kpi-sub" id="kpi-initial-label">Départ: 30 000 F</span>
                 </div>
             </div>
-            <div class="kpi-card">
-                <div class="kpi-icon text-success"><i class="fa-solid fa-arrow-trend-up"></i></div>
+            <div class="kpi-card" style="border-left: 4px solid var(--success-color);">
+                <div class="kpi-icon"><i class="fas fa-chart-line"></i></div>
                 <div class="kpi-data">
                     <span class="kpi-title">PROFIT TOTAL</span>
-                    <strong id="kpi-total-profit">0 F CFA</strong>
-                    <span class="kpi-sub" id="kpi-roi">ROI: 0%</span>
+                    <strong id="kpi-profit" class="text-success">+0 F CFA</strong>
+                    <span class="kpi-sub" id="kpi-roi">ROI: 0.0%</span>
                 </div>
             </div>
-            <div class="kpi-card">
-                <div class="kpi-icon text-primary"><i class="fa-solid fa-bullseye"></i></div>
+            <div class="kpi-card" style="border-left: 4px solid var(--warning-color);">
+                <div class="kpi-icon"><i class="fas fa-bullseye"></i></div>
                 <div class="kpi-data">
                     <span class="kpi-title">OBJECTIF FINAL</span>
-                    <strong id="kpi-target-objective">0 F CFA</strong>
-                    <span class="kpi-sub" id="kpi-progress-percent">Progression: 0%</span>
+                    <strong id="kpi-target">150 000 F CFA</strong>
+                    <span class="kpi-sub" id="kpi-progress-percent">Progression: 0.0%</span>
                 </div>
             </div>
-            <div class="kpi-card">
-                <div class="kpi-icon"><i class="fa-solid fa-percent"></i></div>
+            <div class="kpi-card" style="border-left: 4px solid #94a3b8;">
+                <div class="kpi-icon"><i class="fas fa-percentage"></i></div>
                 <div class="kpi-data">
                     <span class="kpi-title">TAUX DE RÉUSSITE</span>
-                    <strong id="kpi-win-rate">0%</strong>
-                    <span class="kpi-sub" id="kpi-ratio">0 V / 0 D (Total: 0)</span>
+                    <strong id="kpi-winrate">0.0%</strong>
+                    <span class="kpi-sub" id="kpi-coupons-count">0 V / 0 D (Total: 0)</span>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- BARRE DE PROGRESSION -->
-        <section class="progress-section card-box">
+        <div class="card-box progress-section">
             <div class="progress-header">
-                <span id="challenge-day-label">Jour 1 sur 30</span>
-                <span id="challenge-progress-text">0% du temps validé</span>
+                <span id="progress-day-label">Jour 0 sur 30</span>
+                <span id="progress-time-percent">0% du temps validé</span>
             </div>
             <div class="progress-bar-container">
-                <div id="challenge-progress-bar" class="progress-bar-fill"></div>
+                <div id="progress-bar-fill" class="progress-bar-fill"></div>
             </div>
-        </section>
+        </div>
 
         <div class="main-grid">
-            <!-- COLONNE GAUCHE (Formulaires) -->
-            <div class="left-col">
-                
-                <!-- BOÎTE AJOUT COUPON -->
+            <div class="left-column">
                 <div class="card-box">
-                    <div class="section-header-toggle" id="toggle-form-btn">
-                        <h3 id="form-title"><i class="fa-solid fa-circle-plus"></i> Ajouter un Coupon</h3>
-                        <button type="button" class="btn-toggle-icon">
-                            <i class="fa-solid fa-chevron-up" id="toggle-form-icon"></i>
-                        </button>
+                    <div class="section-header-toggle" id="toggle-form-coupon">
+                        <h3><i class="fas fa-plus-circle text-primary"></i> Ajouter un Coupon</h3>
+                        <button class="btn-toggle-icon"><i class="fas fa-chevron-up"></i></button>
                     </div>
-                    <div id="form-collapsible-content" class="collapsible-content">
+                    <div id="form-coupon-content" class="collapsible-content">
                         <form id="coupon-form">
-                            <input type="hidden" id="edit-id">
-                            
-                            <!-- Ligne 1 : Date et Type de Gestion -->
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Date du pari</label>
@@ -94,253 +86,180 @@
                                 <div class="form-group">
                                     <label>Type Gestion</label>
                                     <select id="coupon-type" required>
-                                        <option value="SAFE">SAFE</option>
-                                        <option value="FUN">FUN</option>
+                                        <option value="SAFE">SAFE (Pari sécurisé)</option>
+                                        <option value="FUN">FUN (Pari fun/grosse cote)</option>
+                                    </select>
+                               </div>
+                            </div>
+
+                            <div class="match-selectors-block">
+                                <label>Options des Matchs combinés (sélectionne pour l'analyse)</label>
+                                
+                                <div class="match-status-row">
+                                    <select class="match-option-select" data-match="1">
+                                        <option value="">- Match 1 : Aucune option -</option>
+                                        <option value="Double Chance">Double Chance</option>
+                                        <option value="Plus (Total Buts)">Plus (Total Buts)</option>
+                                        <option value="Moins (Total Buts)">Moins (Total Buts)</option>
+                                        <option value="Les 2 équipes marquent : OUI">Les 2 équipes marquent : OUI</option>
+                                        <option value="Les 2 équipes marquent : NON">Les 2 équipes marquent : NON</option>
+                                        <option value="Handicap Plus">Handicap Plus</option>
+                                        <option value="Handicap Moins">Handicap Moins</option>
+                                    </select>
+                                    <select class="match-status-select" data-match="1">
+                                        <option value="Gagné">Gagné</option>
+                                        <option value="Perdu">Perdu</option>
+                                    </select>
+                                </div>
+
+                                <div class="match-status-row">
+                                    <select class="match-option-select" data-match="2">
+                                        <option value="">- Match 2 : Aucune option -</option>
+                                        <option value="Double Chance">Double Chance</option>
+                                        <option value="Plus (Total Buts)">Plus (Total Buts)</option>
+                                        <option value="Moins (Total Buts)">Moins (Total Buts)</option>
+                                        <option value="Les 2 équipes marquent : OUI">Les 2 équipes marquent : OUI</option>
+                                        <option value="Les 2 équipes marquent : NON">Les 2 équipes marquent : NON</option>
+                                        <option value="Handicap Plus">Handicap Plus</option>
+                                        <option value="Handicap Moins">Handicap Moins</option>
+                                    </select>
+                                    <select class="match-status-select" data-match="2">
+                                        <option value="Gagné">Gagné</option>
+                                        <option value="Perdu">Perdu</option>
+                                    </select>
+                                </div>
+
+                                <div class="match-status-row">
+                                    <select class="match-option-select" data-match="3">
+                                        <option value="">- Match 3 : Aucune option -</option>
+                                        <option value="Double Chance">Double Chance</option>
+                                        <option value="Plus (Total Buts)">Plus (Total Buts)</option>
+                                        <option value="Moins (Total Buts)">Moins (Total Buts)</option>
+                                        <option value="Les 2 équipes marquent : OUI">Les 2 équipes marquent : OUI</option>
+                                        <option value="Les 2 équipes marquent : NON">Les 2 équipes marquent : NON</option>
+                                        <option value="Handicap Plus">Handicap Plus</option>
+                                        <option value="Handicap Moins">Handicap Moins</option>
+                                    </select>
+                                    <select class="match-status-select" data-match="3">
+                                        <option value="Gagné">Gagné</option>
+                                        <option value="Perdu">Perdu</option>
                                     </select>
                                 </div>
                             </div>
-                            
-                            <!-- CONTENEUR DES MATCHS INDIVIDUELS AVEC LEUR RÉSULTAT PROPRE -->
-                            <div id="match-selection-row" class="match-selectors-block">
-                                <div class="match-status-row">
-                                    <div class="form-group flex-2">
-                                        <label>Match 1</label>
-                                        <select id="coupon-market-1">
-                                            <option value="DC">Double Chance</option>
-                                            <option value="PLUS">Plus (Total Buts)</option>
-                                            <option value="MOINS">Moins (Total Buts)</option>
-                                            <option value="H_PLUS">Handicap Plus</option>
-                                            <option value="H_MOINS">Handicap Moins</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group flex-1">
-                                        <label>Statut M1</label>
-                                        <select id="coupon-status-1">
-                                            <option value="WON">Gagné</option>
-                                            <option value="LOST">Perdu</option>
-                                        </select>
-                                    </div>
-                                </div>
 
-                                <div class="match-status-row">
-                                    <div class="form-group flex-2">
-                                        <label>Match 2</label>
-                                        <select id="coupon-market-2">
-                                            <option value="DC">Double Chance</option>
-                                            <option value="PLUS">Plus (Total Buts)</option>
-                                            <option value="MOINS">Moins (Total Buts)</option>
-                                            <option value="H_PLUS">Handicap Plus</option>
-                                            <option value="H_MOINS">Handicap Moins</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group flex-1">
-                                        <label>Statut M2</label>
-                                        <select id="coupon-status-2">
-                                            <option value="WON">Gagné</option>
-                                            <option value="LOST">Perdu</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="match-status-row">
-                                    <div class="form-group flex-2">
-                                        <label>Match 3</label>
-                                        <select id="coupon-market-3">
-                                            <option value="NONE">- Aucun -</option>
-                                            <option value="DC">Double Chance</option>
-                                            <option value="PLUS">Plus (Total Buts)</option>
-                                            <option value="MOINS">Moins (Total Buts)</option>
-                                            <option value="H_PLUS">Handicap Plus</option>
-                                            <option value="H_MOINS">Handicap Moins</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group flex-1">
-                                        <label>Statut M3</label>
-                                        <select id="coupon-status-3">
-                                            <option value="WON">Gagné</option>
-                                            <option value="LOST">Perdu</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Ligne 3 : Cote et Mise -->
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label>Cote</label>
+                                    <label>Cote globale</label>
                                     <input type="number" id="coupon-odds" step="0.001" min="1.001" placeholder="Ex: 2.455" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Mise (F CFA)</label>
-                                    <input type="number" id="coupon-stake" step="1" min="1" required>
+                                    <input type="number" id="coupon-stake" value="2000" min="0" required>
                                 </div>
                             </div>
 
-                            <!-- Bloc Résultat global (Uniquement visible si mode FUN sélectionné) -->
-                            <div class="form-group" id="global-status-block" class="hidden">
-                                <label>Résultat du Ticket FUN</label>
-                                <div class="radio-group">
-                                    <input type="radio" id="status-won" name="coupon-status" value="WON" checked>
-                                    <label for="status-won" class="radio-btn won-btn"><i class="fa-solid fa-check"></i> Gagné</label>
-                                    
-                                    <input type="radio" id="status-lost" name="coupon-status" value="LOST">
-                                    <label for="status-lost" class="radio-btn lost-btn"><i class="fa-solid fa-xmark"></i> Perdu</label>
-                                </div>
+                            <label>Résultat du Coupon</label>
+                            <div class="radio-group">
+                                <input type="radio" name="coupon-result" id="res-won" value="Gagné" checked>
+                                <label for="res-won" class="radio-btn won-btn"><i class="fas fa-check"></i> Gagné</label>
+                                
+                                <input type="radio" name="coupon-result" id="res-lost" value="Perdu">
+                                <label for="res-lost" class="radio-btn lost-btn"><i class="fas fa-times"></i> Perdu</label>
                             </div>
 
-                            <button type="submit" class="btn-primary w-100"><i class="fa-solid fa-floppy-disk"></i> Enregistrer le coupon</button>
-                            <button type="button" id="cancel-edit" class="btn-secondary w-100 hidden" style="margin-top: 10px;">Annuler la modification</button>
+                            <button type="submit" class="btn-primary w-100 mt-3"><i class="fas fa-save"></i> Enregistrer le coupon</button>
                         </form>
                     </div>
                 </div>
 
-                <!-- BOÎTE PARAMÈTRES -->
-                <div class="card-box mt-3">
-                    <div class="section-header-toggle" id="toggle-settings-btn">
-                        <h3><i class="fa-solid fa-gear"></i> Paramètres</h3>
-                        <button type="button" class="btn-toggle-icon">
-                            <i class="fa-solid fa-chevron-up" id="toggle-settings-icon"></i>
-                        </button>
+                <div class="card-box">
+                    <div class="section-header-toggle" id="toggle-params">
+                        <h3><i class="fas fa-cogs text-muted"></i> Paramètres</h3>
+                        <button class="btn-toggle-icon"><i class="fas fa-chevron-down"></i></button>
                     </div>
-                    <div id="settings-collapsible-content" class="collapsible-content">
-                        <form id="settings-form">
-                            <div class="form-group">
-                                <label>Capital Initial (F CFA)</label>
-                                <input type="number" id="set-initial" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Objectif Target (F CFA)</label>
-                                <input type="number" id="set-target" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Durée du Challenge (Jours)</label>
-                                <input type="number" id="set-days" required>
-                            </div>
-                            <button type="submit" class="btn-secondary w-100"><i class="fa-solid fa-rotate"></i> Mettre à jour</button>
-                        </form>
+                    <div id="params-content" class="collapsible-content collapsed">
+                        <div class="form-group">
+                            <label>Capital Initial (F CFA)</label>
+                            <input type="number" id="param-initial-capital" value="30000">
+                        </div>
+                        <div class="form-group mt-3">
+                            <label>Objectif Target (F CFA)</label>
+                            <input type="number" id="param-target-capital" value="150000">
+                        </div>
+                        <div class="form-group mt-3">
+                            <label>Durée du Challenge (Jours)</label>
+                            <input type="number" id="param-duration" value="30">
+                        </div>
+                        <button id="btn-save-config" class="btn-secondary w-100 mt-3"><i class="fas fa-sync-alt"></i> Mettre à jour la config</button>
                     </div>
                 </div>
 
-                <!-- BOÎTE EXPORT -->
-                <div class="card-box mt-3">
-                    <h3><i class="fa-solid fa-download"></i> Sauvegarde & Export</h3>
-                    <div class="export-actions" style="margin-top: 15px;">
-                        <button id="export-csv" class="btn-success w-100"><i class="fa-solid fa-file-csv"></i> Exporter en CSV</button>
-                        <button id="export-pdf" class="btn-secondary w-100" style="margin-top: 10px;"><i class="fa-solid fa-print"></i> Imprimer / PDF</button>
+                <div class="card-box">
+                    <h3><i class="fas fa-download text-muted"></i> Sauvegarde & Export</h3>
+                    <div class="form-row mt-3">
+                        <button id="btn-export" class="btn-success flex-1"><i class="fas fa-file-excel"></i> Exporter JSON</button>
+                        <button id="btn-import-trigger" class="btn-secondary flex-1"><i class="fas fa-upload"></i> Importer JSON</button>
+                        <input type="file" id="file-import" class="hidden" accept=".json">
                     </div>
                 </div>
             </div>
 
-            <!-- COLONNE DROITE (Graphiques et Données) -->
-            <div class="right-col">
-                
-                <!-- GRAPHIQUE -->
+            <div class="right-column">
                 <div class="card-box">
-                    <h3><i class="fa-solid fa-chart-area"></i> Évolution Graphique du Capital</h3>
+                    <h3><i class="fas fa-chart-area text-primary"></i> Évolution Graphique du Capital</h3>
                     <div class="chart-container">
-                        <svg viewBox="0 0 600 220" preserveAspectRatio="none" id="main-chart">
-                            <g id="grid-lines"></g>
-                            <path id="chart-area-path" fill="var(--chart-area)" opacity="0.2"></path>
-                            <path id="chart-line-path" fill="none" stroke="var(--primary-color)" stroke-width="3"></path>
-                            <g id="chart-dots"></g>
-                        </svg>
-                        <div id="chart-empty-msg" class="empty-state hidden">Ajoutez des coupons pour voir le graphique</div>
+                        <svg id="main-chart" viewBox="0 0 500 150"></svg>
                     </div>
                 </div>
 
-                <!-- RENDEMENT PAR OPTIONS AVEC ANALYSE DÉTAILLÉE DES FAILLES -->
-                <div class="card-box mt-3">
-                    <h3><i class="fa-solid fa-magnifying-glass-chart"></i> Analyse & Failles des Options (SAFE uniquement)</h3>
-                    <div class="options-analysis-grid">
-                        <div class="option-analysis-card" id="analysis-dc">
-                            <span class="option-name">Double Chance</span>
-                            <strong class="option-rate">0%</strong>
-                            <span class="option-details">0 V / 0 D</span>
+                <div class="card-box">
+                    <h3><i class="fas fa-search-plus text-primary"></i> Analyse & Failles des Options</h3>
+                    <div class="options-analysis-grid" id="options-analysis-container">
                         </div>
-                        <div class="option-analysis-card" id="analysis-plus">
-                            <span class="option-name">Plus (Total Buts)</span>
-                            <strong class="option-rate">0%</strong>
-                            <span class="option-details">0 V / 0 D</span>
-                        </div>
-                        <div class="option-analysis-card" id="analysis-moins">
-                            <span class="option-name">Moins (Total Buts)</span>
-                            <strong class="option-rate">0%</strong>
-                            <span class="option-details">0 V / 0 D</span>
-                        </div>
-                        <div class="option-analysis-card" id="analysis-h_plus">
-                            <span class="option-name">Handicap Plus</span>
-                            <strong class="option-rate">0%</strong>
-                            <span class="option-details">0 V / 0 D</span>
-                        </div>
-                        <div class="option-analysis-card" id="analysis-h_moins">
-                            <span class="option-name">Handicap Moins</span>
-                            <strong class="option-rate">0%</strong>
-                            <span class="option-details">0 V / 0 D</span>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- MATRICE TEMPORELLE -->
-                <div class="card-box mt-3">
-                    <div class="section-header-toggle" id="toggle-grid-btn">
-                        <h3><i class="fa-solid fa-calendar-days"></i> Matrice Temporelle</h3>
-                        <button type="button" class="btn-toggle-icon">
-                            <i class="fa-solid fa-chevron-up" id="toggle-grid-icon"></i>
-                        </button>
+                <div class="card-box">
+                    <div class="section-header-toggle" id="toggle-matrix">
+                        <h3><i class="fas fa-calendar-alt text-primary"></i> Matrice Temporelle du Challenge</h3>
+                        <button class="btn-toggle-icon"><i class="fas fa-chevron-up"></i></button>
                     </div>
-                    <div id="grid-collapsible-content" class="collapsible-content">
+                    <div id="matrix-content" class="collapsible-content">
                         <div class="challenge-grid" id="challenge-days-grid">
-                            <!-- Généré par JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- STATS AVANCÉES -->
-                <div class="card-box mt-3">
-                    <h3><i class="fa-solid fa-chart-pie"></i> Métriques & Analyses Globales</h3>
-                    <div class="stats-grid">
-                        <div class="stat-box"><span>Coupons SAFE</span><strong id="stat-count-safe" class="text-primary">0</strong></div>
-                        <div class="stat-box"><span>Coupons FUN</span><strong id="stat-count-fun" class="text-warning">0</strong></div>
-                        <div class="stat-box"><span>Meilleure Cote</span><strong id="stat-best-odds">1.00</strong></div>
-                        <div class="stat-box"><span>Grosse Mise</span><strong id="stat-max-stake">0 F</strong></div>
-                        <div class="stat-box"><span>Gros Gain Net</span><strong id="stat-max-gain" class="text-success">0 F</strong></div>
-                        <div class="stat-box"><span>Volume Misé</span><strong id="stat-total-staked">0 F</strong></div>
-                        <div class="stat-box"><span>Série Victoires</span><strong id="stat-streak-win" class="text-success">0</strong></div>
-                        <div class="stat-box"><span>Série Défaites</span><strong id="stat-streak-loss" class="text-danger">0</strong></div>
-                    </div>
-                </div>
-
-                <!-- HISTORIQUE DES COUPONS -->
-                <div class="card-box mt-3">
-                    <div class="section-header-toggle" id="toggle-history-btn">
-                        <h3><i class="fa-solid fa-list-check"></i> Historique des Paris</h3>
-                        <button type="button" class="btn-toggle-icon">
-                            <i class="fa-solid fa-chevron-up" id="toggle-history-icon"></i>
-                        </button>
-                    </div>
-                    <div id="history-collapsible-content" class="collapsible-content">
-                        <div class="filter-bar">
-                            <input type="text" id="search-input" placeholder="Rechercher un pari..." class="search-box">
-                            <div class="filter-buttons">
-                                <button class="filter-btn active" data-filter="ALL">Tous</button>
-                                <button class="filter-btn" data-filter="SAFE">SAFE</button>
-                                <button class="filter-btn" data-filter="FUN">FUN</button>
-                                <button class="filter-btn" data-filter="WON">Gagnés</button>
-                                <button class="filter-btn" data-filter="LOST">Perdus</button>
                             </div>
-                        </div>
-                        <div id="coupons-cards-container" class="cards-list">
-                            <!-- Généré par JS -->
-                        </div>
-                        <div id="cards-empty-msg" class="empty-state hidden">Aucun pari trouvé.</div>
                     </div>
                 </div>
 
+                <div class="card-box">
+                    <h3><i class="fas fa-chart-pie text-primary"></i> Métriques & Analyses Avancées</h3>
+                    <div class="stats-grid mt-3">
+                        <div class="stat-box"><span>Coupons SAFE</span><strong id="stat-safe-count" class="text-primary">0</strong></div>
+                        <div class="stat-box"><span>Coupons FUN</span><strong id="stat-fun-count" class="text-warning">0</strong></div>
+                        <div class="stat-box"><span>Meilleure Cote Validée</span><strong id="stat-best-odds">1.000</strong></div>
+                        <div class="stat-box"><span>Plus Grosse Mise</span><strong id="stat-max-stake">0 F</strong></div>
+                        <div class="stat-box"><span>Plus Gros Gain Net</span><strong id="stat-max-gain" class="text-success">0 F</strong></div>
+                        <div class="stat-box"><span>Volume Total Misé</span><strong id="stat-total-volume">0 F</strong></div>
+                        <div class="stat-box"><span>Série Max Victoires</span><strong id="stat-streak-win" class="text-success">0</strong></div>
+                        <div class="stat-box"><span>Série Max Défaites</span><strong id="stat-streak-loss" class="text-danger">0</strong></div>
+                    </div>
+                </div>
+
+                <div class="card-box">
+                    <h3><i class="fas fa-history text-muted"></i> Historique des Paris</h3>
+                    <div class="filter-bar mt-3">
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-filter="all">Tous</button>
+                            <button class="filter-btn" data-filter="SAFE">SAFE</button>
+                            <button class="filter-btn" data-filter="FUN">FUN</button>
+                            <button class="filter-btn" data-filter="Gagné">Gagnés</button>
+                            <button class="filter-btn" data-filter="Perdu">Perdus</button>
+                        </div>
+                    </div>
+                    <div class="cards-list" id="coupons-history-list">
+                        </div>
+                </div>
             </div>
         </div>
-    </main>
-
-    <div id="toast-container"></div>
+    </div>
 
     <script src="script.js"></script>
 </body>

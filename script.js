@@ -43,7 +43,7 @@ function initTheme() {
     }
 }
 
-// Fonction corrigée pour afficher/masquer les matchs selon le type de gestion
+// Fonction pour afficher/masquer les matchs selon le type de gestion
 function toggleMatchSelectors() {
     const typeSelect = document.getElementById("coupon-type");
     const matchBlock = document.querySelector(".match-selectors-block");
@@ -55,22 +55,29 @@ function toggleMatchSelectors() {
         // Réinitialise les sélections quand on masque
         document.querySelectorAll(".match-option-select").forEach(s => s.value = "");
     } else {
-        matchBlock.style.display = "flex"; // <-- Correction ici (un seul .style)
+        matchBlock.style.display = "flex"; // <-- CORRIGÉ ICI (plus de .style.style)
     }
 }
 
 function setupEventListeners() {
     // Écouteur sur le changement de type (SAFE / FUN)
-    document.getElementById("coupon-type").addEventListener("change", toggleMatchSelectors);
+    const typeSelect = document.getElementById("coupon-type");
+    if (typeSelect) {
+        typeSelect.addEventListener("change", toggleMatchSelectors);
+    }
 
     // Thème toggle
-    document.getElementById("theme-toggle").addEventListener("click", () => {
-        const currentTheme = document.documentElement.getAttribute("data-theme");
-        const newTheme = currentTheme === "dark" ? "light" : "dark";
-        document.documentElement.setAttribute("data-theme", newTheme);
-        localStorage.setItem("bet-tracker-theme", newTheme);
-        document.querySelector("#theme-toggle i").className = newTheme === "dark" ? "fas fa-sun" : "fas fa-moon";
-    });
+    const themeBtn = document.getElementById("theme-toggle");
+    if (themeBtn) {
+        themeBtn.addEventListener("click", () => {
+            const currentTheme = document.documentElement.getAttribute("data-theme");
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", newTheme);
+            localStorage.setItem("bet-tracker-theme", newTheme);
+            const icon = themeBtn.querySelector("i");
+            if (icon) icon.className = newTheme === "dark" ? "fas fa-sun" : "fas fa-moon";
+        });
+    }
 
     // Sections pliables / Accordéons
     setupCollapsible("toggle-form-coupon", "form-coupon-content");
@@ -78,29 +85,38 @@ function setupEventListeners() {
     setupCollapsible("toggle-matrix", "matrix-content");
 
     // Formulaire d'ajout de coupon
-    document.getElementById("coupon-form").addEventListener("submit", (e) => {
-        e.preventDefault();
-        saveCoupon();
-    });
+    const couponForm = document.getElementById("coupon-form");
+    if (couponForm) {
+        couponForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            saveCoupon();
+        });
+    }
 
     // Formulaire de configuration
-    document.getElementById("btn-save-config").addEventListener("click", () => {
-        config.initialCapital = parseFloat(document.getElementById("param-initial-capital").value) || 30000;
-        config.targetCapital = parseFloat(document.getElementById("param-target-capital").value) || 150000;
-        config.durationDays = parseInt(document.getElementById("param-duration").value) || 30;
-        saveData();
-        updateDashboard();
-        alert("Configuration mise à jour avec succès !");
-    });
+    const saveConfigBtn = document.getElementById("btn-save-config");
+    if (saveConfigBtn) {
+        saveConfigBtn.addEventListener("click", () => {
+            config.initialCapital = parseFloat(document.getElementById("param-initial-capital").value) || 30000;
+            config.targetCapital = parseFloat(document.getElementById("param-target-capital").value) || 150000;
+            config.durationDays = parseInt(document.getElementById("param-duration").value) || 30;
+            saveData();
+            updateDashboard();
+            alert("Configuration mise à jour avec succès !");
+        });
+    }
 
     // Bouton de réinitialisation complète
-    document.getElementById("btn-reset").addEventListener("click", () => {
-        if (confirm("Attention ! Es-tu sûr de vouloir réinitialiser tout le challenge ? Toutes les données seront perdues.")) {
-            coupons = [];
-            localStorage.removeItem("bet_tracker_coupons");
-            updateDashboard();
-        }
-    });
+    const resetBtn = document.getElementById("btn-reset");
+    if (resetBtn) {
+        resetBtn.addEventListener("click", () => {
+            if (confirm("Attention ! Es-tu sûr de vouloir réinitialiser tout le challenge ? Toutes les données seront perdues.")) {
+                coupons = [];
+                localStorage.removeItem("bet_tracker_coupons");
+                updateDashboard();
+            }
+        });
+    }
 
     // Filtrage de l'historique
     const filterBtns = document.querySelectorAll(".filter-btn");
@@ -113,11 +129,18 @@ function setupEventListeners() {
     });
 
     // Export & Import JSON
-    document.getElementById("btn-export").addEventListener("click", exportData);
-    document.getElementById("btn-import-trigger").addEventListener("click", () => {
-        document.getElementById("file-import").click();
-    });
-    document.getElementById("file-import").addEventListener("change", importData);
+    const exportBtn = document.getElementById("btn-export");
+    if (exportBtn) exportBtn.addEventListener("click", exportData);
+
+    const importTrigger = document.getElementById("btn-import-trigger");
+    if (importTrigger) {
+        importTrigger.addEventListener("click", () => {
+            document.getElementById("file-import").click();
+        });
+    }
+
+    const fileImport = document.getElementById("file-import");
+    if (fileImport) fileImport.addEventListener("change", importData);
 }
 
 function setupCollapsible(triggerId, contentId) {
@@ -133,8 +156,11 @@ function setupCollapsible(triggerId, contentId) {
 }
 
 function setDefaultDate() {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById("coupon-date").value = today;
+    const couponDate = document.getElementById("coupon-date");
+    if (couponDate) {
+        const today = new Date().toISOString().split('T')[0];
+        couponDate.value = today;
+    }
 }
 
 // ==========================================================================
@@ -203,38 +229,41 @@ function updateDashboard() {
     let progressPercent = Math.min(((currentCapital - config.initialCapital) / (config.targetCapital - config.initialCapital)) * 100, 100);
     if (progressPercent < 0) progressPercent = 0;
 
-    document.getElementById("kpi-capital").innerText = currentCapital.toFixed(0) + " F CFA";
-    document.getElementById("kpi-initial-label").innerText = "Départ: " + config.initialCapital + " F";
+    // Rendu sécurisé des éléments HTML (vérification de l'existence de l'ID)
+    if(document.getElementById("kpi-capital")) document.getElementById("kpi-capital").innerText = currentCapital.toFixed(0) + " F CFA";
+    if(document.getElementById("kpi-initial-label")) document.getElementById("kpi-initial-label").innerText = "Départ: " + config.initialCapital + " F";
     
     const profitEl = document.getElementById("kpi-profit");
-    if (profitTotal >= 0) {
-        profitEl.innerText = "+" + profitTotal.toFixed(0) + " F CFA";
-        profitEl.className = "text-success";
-    } else {
-        profitEl.innerText = profitTotal.toFixed(0) + " F CFA";
-        profitEl.className = "text-danger";
+    if (profitEl) {
+        if (profitTotal >= 0) {
+            profitEl.innerText = "+" + profitTotal.toFixed(0) + " F CFA";
+            profitEl.className = "text-success";
+        } else {
+            profitEl.innerText = profitTotal.toFixed(0) + " F CFA";
+            profitEl.className = "text-danger";
+        }
     }
     
-    document.getElementById("kpi-roi").innerText = "ROI: " + roi.toFixed(1) + "%";
-    document.getElementById("kpi-target").innerText = config.targetCapital + " F CFA";
-    document.getElementById("kpi-progress-percent").innerText = "Progression: " + progressPercent.toFixed(1) + "%";
-    document.getElementById("kpi-winrate").innerText = winRate.toFixed(1) + "%";
-    document.getElementById("kpi-coupons-count").innerText = `${totalWins} V / ${totalLosses} D (Total: ${coupons.length})`;
+    if(document.getElementById("kpi-roi")) document.getElementById("kpi-roi").innerText = "ROI: " + roi.toFixed(1) + "%";
+    if(document.getElementById("kpi-target")) document.getElementById("kpi-target").innerText = config.targetCapital + " F CFA";
+    if(document.getElementById("kpi-progress-percent")) document.getElementById("kpi-progress-percent").innerText = "Progression: " + progressPercent.toFixed(1) + "%";
+    if(document.getElementById("kpi-winrate")) document.getElementById("kpi-winrate").innerText = winRate.toFixed(1) + "%";
+    if(document.getElementById("kpi-coupons-count")) document.getElementById("kpi-coupons-count").innerText = `${totalWins} V / ${totalLosses} D (Total: ${coupons.length})`;
 
     let distinctDaysCount = new Set(coupons.map(c => c.date)).size;
     let dayProgressPercent = Math.min((distinctDaysCount / config.durationDays) * 100, 100);
-    document.getElementById("progress-day-label").innerText = `Jour ${distinctDaysCount} sur ${config.durationDays}`;
-    document.getElementById("progress-time-percent").innerText = `${dayProgressPercent.toFixed(0)}% du temps validé`;
-    document.getElementById("progress-bar-fill").style.width = dayProgressPercent + "%";
+    if(document.getElementById("progress-day-label")) document.getElementById("progress-day-label").innerText = `Jour ${distinctDaysCount} sur ${config.durationDays}`;
+    if(document.getElementById("progress-time-percent")) document.getElementById("progress-time-percent").innerText = `${dayProgressPercent.toFixed(0)}% du temps validé`;
+    if(document.getElementById("progress-bar-fill")) document.getElementById("progress-bar-fill").style.width = dayProgressPercent + "%";
 
-    document.getElementById("stat-safe-count").innerText = safeCount;
-    document.getElementById("stat-fun-count").innerText = funCount;
-    document.getElementById("stat-best-odds").innerText = bestOdds.toFixed(3);
-    document.getElementById("stat-max-stake").innerText = maxStake.toFixed(0) + " F";
-    document.getElementById("stat-max-gain").innerText = maxNetGain.toFixed(0) + " F";
-    document.getElementById("stat-total-volume").innerText = totalStaked.toFixed(0) + " F";
-    document.getElementById("stat-streak-win").innerText = maxWinStreak;
-    document.getElementById("stat-streak-loss").innerText = maxLossStreak;
+    if(document.getElementById("stat-safe-count")) document.getElementById("stat-safe-count").innerText = safeCount;
+    if(document.getElementById("stat-fun-count")) document.getElementById("stat-fun-count").innerText = funCount;
+    if(document.getElementById("stat-best-odds")) document.getElementById("stat-best-odds").innerText = bestOdds.toFixed(3);
+    if(document.getElementById("stat-max-stake")) document.getElementById("stat-max-stake").innerText = maxStake.toFixed(0) + " F";
+    if(document.getElementById("stat-max-gain")) document.getElementById("stat-max-gain").innerText = maxNetGain.toFixed(0) + " F";
+    if(document.getElementById("stat-total-volume")) document.getElementById("stat-total-volume").innerText = totalStaked.toFixed(0) + " F";
+    if(document.getElementById("stat-streak-win")) document.getElementById("stat-streak-win").innerText = maxWinStreak;
+    if(document.getElementById("stat-streak-loss")) document.getElementById("stat-streak-loss").innerText = maxLossStreak;
 
     renderOptionsAnalysis(optionStats);
     renderTemporalMatrix();
@@ -247,6 +276,7 @@ function updateDashboard() {
 // ==========================================================================
 function renderOptionsAnalysis(stats) {
     const container = document.getElementById("options-analysis-container");
+    if (!container) return;
     container.innerHTML = "";
 
     PRESET_OPTIONS.forEach(opt => {
@@ -271,6 +301,7 @@ function renderOptionsAnalysis(stats) {
 
 function renderTemporalMatrix() {
     const grid = document.getElementById("challenge-days-grid");
+    if (!grid) return;
     grid.innerHTML = "";
 
     let couponsByDate = {};
@@ -313,6 +344,7 @@ function renderTemporalMatrix() {
 
 function renderChart() {
     const svg = document.getElementById("main-chart");
+    if (!svg) return;
     svg.innerHTML = "";
 
     if (coupons.length === 0) {
@@ -379,6 +411,7 @@ function renderChart() {
 
 function renderHistory(filterType) {
     const list = document.getElementById("coupons-history-list");
+    if (!list) return;
     list.innerHTML = "";
 
     let filtered = [...coupons].reverse();
@@ -439,10 +472,10 @@ function saveCoupon() {
     const type = document.getElementById("coupon-type").value;
     const odds = parseFloat(document.getElementById("coupon-odds").value);
     const stake = parseFloat(document.getElementById("coupon-stake").value) || config.defaultStake;
-    const result = document.querySelector('input[name="coupon-result"]:checked').value;
+    const resultElement = document.querySelector('input[name="coupon-result"]:checked');
+    const result = resultElement ? resultElement.value : "Gagné";
 
     let matches = [];
-    // On ne récupère les matchs que si on n'est pas en mode FUN
     if (type !== "FUN") {
         for (let i = 1; i <= 3; i++) {
             let optSelect = document.querySelector(`.match-option-select[data-match="${i}"]`);
@@ -450,7 +483,7 @@ function saveCoupon() {
             if (optSelect && optSelect.value) {
                 matches.push({
                     name: optSelect.value,
-                    status: statSelect.value
+                    status: statSelect ? statSelect.value : "Gagné"
                 });
             }
         }
@@ -465,7 +498,6 @@ function saveCoupon() {
     document.getElementById("coupon-odds").value = "";
     document.querySelectorAll(".match-option-select").forEach(s => s.value = "");
     
-    // Rétablir l'affichage de base si nécessaire
     toggleMatchSelectors();
     setDefaultDate();
 }
@@ -490,9 +522,9 @@ function loadData() {
     if (savedCoupons) coupons = JSON.parse(savedCoupons);
     if (savedConfig) {
         config = JSON.parse(savedConfig);
-        document.getElementById("param-initial-capital").value = config.initialCapital;
-        document.getElementById("param-target-capital").value = config.targetCapital;
-        document.getElementById("param-duration").value = config.durationDays;
+        if(document.getElementById("param-initial-capital")) document.getElementById("param-initial-capital").value = config.initialCapital;
+        if(document.getElementById("param-target-capital")) document.getElementById("param-target-capital").value = config.targetCapital;
+        if(document.getElementById("param-duration")) document.getElementById("param-duration").value = config.durationDays;
     }
 }
 
@@ -526,6 +558,7 @@ function importData(e) {
     }
 }
 
+// Formatage de date
 function formatDateStr(dateStr) {
     if (!dateStr) return "";
     const parts = dateStr.split("-");

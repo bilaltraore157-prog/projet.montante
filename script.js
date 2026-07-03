@@ -150,10 +150,15 @@ function setupCollapsible(triggerId, contentId) {
     const content = document.getElementById(contentId);
     if (!trigger || !content) return;
 
-    trigger.addEventListener("click", () => {
+    trigger.addEventListener("click", (e) => {
+        // Alterne la classe pour afficher/masquer
         content.classList.toggle("collapsed");
+        
+        // Alterne la rotation de la flèche
         const icon = trigger.querySelector(".btn-toggle-icon i");
-        if (icon) icon.classList.toggle("rotated");
+        if (icon) {
+            icon.classList.toggle("rotated");
+        }
     });
 }
 

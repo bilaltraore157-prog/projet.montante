@@ -1,3 +1,4 @@
+
 // ==========================================================================
 // CONFIGURATION ET STATE GENERAL
 // ==========================================================================
@@ -200,9 +201,13 @@ function updateDashboard() {
         if (cp.type === "FUN") funCount++;
 
         if (cp.result === "Gagné") {
-            let gainNet = (cp.stake * cp.odds) - cp.stake;
-            currentCapital += gainNet;
-            if (gainNet > maxNetGain) maxNetGain = gainNet;
+            // CORRECTION ICI : Le capital évolue avec le bénéfice net réel pour le solde général (Gain - Mise)
+            let gainNetReel = (cp.stake * cp.odds) - cp.stake;
+            currentCapital += gainNetReel;
+            
+            // Pour les statistiques du plus gros gain
+            let gainTotalBrut = cp.stake * cp.odds;
+            if (gainTotalBrut > maxNetGain) maxNetGain = gainTotalBrut;
             if (cp.odds > bestOdds) bestOdds = cp.odds;
 
             totalWins++;
@@ -347,7 +352,6 @@ function renderTemporalMatrix() {
     }
 }
 
-// NOUVELLE FONCTION GRAPHIQUE : EVOLUTION DYNAMIQUE STYLE FINANCIER
 function renderChart() {
     const svg = document.getElementById("main-chart");
     if (!svg) return;
@@ -393,7 +397,6 @@ function renderChart() {
         return { x, y, value: val };
     });
 
-    // Définition du Gradient dégradé sous la courbe
     let defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
     defs.innerHTML = `
         <linearGradient id="chart-gradient" x1="0" y1="0" x2="0" y2="1">
@@ -403,7 +406,6 @@ function renderChart() {
     `;
     svg.appendChild(defs);
 
-    // Ligne pointillée repère pour le Capital Initial
     let startY = height - padding - ((config.initialCapital - adjustedMin) / (adjustedMax - adjustedMin)) * (height - padding * 2);
     let baseLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
     baseLine.setAttribute("x1", padding);
@@ -416,7 +418,6 @@ function renderChart() {
     baseLine.setAttribute("opacity", "0.5");
     svg.appendChild(baseLine);
 
-    // Construction du chemin de la ligne principale
     let pathD = `M ${coords[0].x} ${coords[0].y}`;
     for (let i = 1; i < coords.length; i++) {
         pathD += ` L ${coords[i].x} ${coords[i].y}`;
@@ -431,14 +432,12 @@ function renderChart() {
     polyline.setAttribute("stroke-linejoin", "round");
     svg.appendChild(polyline);
 
-    // Zone dégradée de fond
     let areaD = `${pathD} L ${coords[coords.length - 1].x} ${height - padding} L ${coords[0].x} ${height - padding} Z`;
     let areaPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
     areaPath.setAttribute("d", areaD);
     areaPath.setAttribute("fill", "url(#chart-gradient)");
     svg.appendChild(areaPath);
 
-    // Cercles repères interactifs aux extrémités et intermédiaires
     coords.forEach((pt, idx) => {
         if (coords.length < 15 || idx === 0 || idx === coords.length - 1 || idx % Math.floor(coords.length / 5) === 0) {
             let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -487,14 +486,15 @@ function renderHistory(filterType) {
             optionsText = cp.matches.map(m => `${m.name} (${m.status})`).join(" + ");
         }
 
-        let gainText = cp.result === "Gagné" ? `+${((cp.stake * cp.odds) - cp.stake).toFixed(0)} F` : `-${cp.stake} F`;
+        // CORRECTION ICI : Si gagné, affiche le gain complet (Mise * Cote) au lieu du gain net (-mise)
+        let gainText = cp.result === "Gagné" ? `+${(cp.stake * cp.odds).toFixed(0)} F` : `-${cp.stake} F`;
         let gainClass = cp.result === "Gagné" ? "text-success" : "text-danger";
 
         card.innerHTML = `
             <div class="card-top">
                 <span class="card-date">${formatDateStr(cp.date)}</span>
                 <div class="combo-markets">${optionsText}</div>
-                <div>
+                <div style="margin-top: 4px;">
                     <span class="badge badge-${cp.type.toLowerCase()}">${cp.type}</span>
                     <span class="badge badge-${cp.result === 'Gagné' ? 'won' : 'lost'}">${cp.result}</span>
                 </div>
@@ -502,11 +502,11 @@ function renderHistory(filterType) {
             <div class="card-main-info">
                 <div class="info-item"><span class="label">COTE</span><span class="val">${cp.odds.toFixed(3)}</span></div>
                 <div class="info-item"><span class="label">MISE</span><span class="val">${cp.stake} F</span></div>
-                <div class="info-item"><span class="label">BILAN NET</span><span class="val ${gainClass}">${gainText}</span></div>
+                <div class="info-item"><span class="label">GAIN RETOUR</span><span class="val ${gainClass}">${gainText}</span></div>
             </div>
-            <div class="card-actions" style="display: flex; gap: 8px; justify-content: flex-end;">
-                <button class="btn-icon edit" onclick="editCoupon('${cp.id}')" title="Modifier" style="background: var(--bg-secondary); color: var(--primary-color); border: 1px solid var(--border-color); padding: 6px 10px; border-radius: 6px; cursor: pointer;"><i class="fas fa-edit"></i></button>
-                <button class="btn-icon delete" onclick="deleteCoupon('${cp.id}')" title="Supprimer"><i class="fas fa-trash-alt"></i></button>
+            <div class="card-actions" style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px;">
+                <button class="btn-icon edit" onclick="editCoupon('${cp.id}')" title="Modifier" style="color: var(--primary-color); background: rgba(59, 130, 246, 0.1); border: none; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer;"><i class="fas fa-edit"></i></button>
+                <button class="btn-icon delete" onclick="deleteCoupon('${cp.id}')" title="Supprimer" style="color: var(--danger-color); background: rgba(239, 68, 68, 0.1); border: none; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer;"><i class="fas fa-trash-alt"></i></button>
             </div>
         `;
         list.appendChild(card);
